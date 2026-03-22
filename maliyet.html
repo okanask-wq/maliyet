@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Elmas Uçlu Daire Testere — Maliyet Hesaplama</title>
+    <style>
+        :root {
+            --primary: #0f2137;
+            --secondary: #1a3a5c;
+            --accent: #2563eb;
+            --accent2: #3b82f6;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg: #eef2f7;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --border2: #cbd5e1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 14px; }
+        .header-icon {
+            width: 46px; height: 46px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+        header h1 { font-size: 19px; font-weight: 700; letter-spacing: 0.2px; }
+        header p { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .rate-chips { display: flex; gap: 8px; }
+        .rate-chip {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 8px;
+            padding: 6px 13px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .rate-chip .rlabel { font-size: 10px; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.6px; }
+        .rate-chip .rvalue { font-size: 15px; font-weight: 700; margin-top: 1px; }
+        .rate-chip .rdate { font-size: 10px; opacity: 0.5; margin-top: 1px; }
+        .rate-chip.highlight { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+        .rate-chip.highlight .rvalue { font-size: 16px; color: #93c5fd; }
+        .rate-input {
+            background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.35);
+            color: white; font-size: 15px; font-weight: 700; font-family: inherit;
+            width: 80px; text-align: center; outline: none; padding: 1px 2px;
+        }
+        .rate-input:focus { border-bottom-color: #93c5fd; background: rgba(255,255,255,0.08); border-radius: 4px 4px 0 0; }
+        .rate-status { font-size: 9px; opacity: 0.5; margin-top: 2px; text-align: center; }
+        .refresh-btn {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white; border-radius: 8px;
+            width: 36px; height: 36px; cursor: pointer;
+            font-size: 17px; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .refresh-btn:hover { background: rgba(255,255,255,0.22); }
+        .spinning { animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── LAYOUT ── */
+        .container { max-width: 860px; margin: 0 auto; padding: 28px 16px 48px; }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 26px 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.07);
+            margin-bottom: 18px;
+        }
+        .card-title {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--muted); margin-bottom: 18px;
+            display: flex; align-items: center; gap: 7px;
+        }
+
+        /* ── INPUTS ── */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 13px; font-weight: 600; color: var(--text); }
+        .field .hint { font-size: 11px; color: var(--muted); }
+        .field input {
+            border: 2px solid var(--border);
+            border-radius: 10px; padding: 11px 15px;
+            font-size: 15px; font-family: inherit;
+            background: #f8fafc; transition: border-color 0.2s, background 0.2s;
+            outline: none;
+        }
+        .field input:focus { border-color: var(--accent); background: white; }
+        .field input.has-error { border-color: var(--danger); }
+        .field-wide { grid-column: 1 / -1; }
+
+        .btn-calc {
+            width: 100%; margin-top: 6px;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white; border: none; border-radius: 11px;
+            padding: 15px; font-size: 15px; font-weight: 700;
+            cursor: pointer; letter-spacing: 0.4px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(37,99,235,0.3);
+            user-select: none;
+        }
+        .btn-calc:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(37,99,235,0.38); }
+        .btn-calc:active { transform: translateY(0); background: linear-gradient(135deg, #1e40af, #1d4ed8); }
+
+        .error-box {
+            background: #fef2f2; border: 1px solid #fecaca;
+            color: var(--danger); border-radius: 10px;
+            padding: 11px 15px; font-size: 13px; font-weight: 500;
+            margin-top: 12px; display: none;
+        }
+
+        /* ── TYPE GUIDE ── */
+        .divider { height: 1px; background: var(--border); margin: 18px 0; }
+        .type-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+        .type-chip {
+            background: #f8fafc; border: 1px solid var(--border);
+            border-radius: 9px; padding: 9px 6px; text-align: center; font-size: 11px; color: var(--muted);
+        }
+        .type-chip strong { display: block; color: var(--accent); font-size: 15px; margin-bottom: 2px; }
+
+        /* ── RESULTS ── */
+        #results { display: none; }
+
+        .saw-header {
+            background: linear-gradient(135deg, #f0f6ff, #e8f0fe);
+            border: 1px solid #bfdbfe; border-radius: 13px;
+            padding: 15px 20px; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .saw-badge { display: flex; align-items: center; gap: 12px; }
+        .saw-type-tag {
+            background: var(--accent); color: white;
+            border-radius: 8px; padding: 6px 14px;
+            font-size: 20px; font-weight: 800; letter-spacing: 1px;
+        }
+        .saw-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .saw-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+        /* ── COST ITEMS ── */
+        .cost-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .cost-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; border-radius: 12px;
+            border: 1px solid var(--border); background: #fafcff;
+        }
+        .cost-item-left { display: flex; align-items: center; gap: 12px; }
+        .cost-icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 17px;
+        }
+        .ic-blue  { background: #eff6ff; }
+        .ic-green { background: #f0fdf4; }
+        .ic-orange{ background: #fff7ed; }
+        .cost-name { font-size: 14px; font-weight: 600; }
+        .cost-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .cost-eur { font-size: 18px; font-weight: 700; }
+        .cost-eur .cur { font-size: 11px; font-weight: 500; color: var(--muted); margin-left: 2px; }
+
+        /* ── TOTAL ── */
+        .total-bar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border-radius: 14px;
+            padding: 18px 22px; margin-bottom: 18px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .total-label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.6px; }
+        .total-sub { font-size: 11px; opacity: 0.5; margin-top: 3px; }
+        .total-val { font-size: 30px; font-weight: 800; }
+        .total-val .cur { font-size: 14px; font-weight: 500; opacity: 0.75; margin-left: 3px; }
+
+        /* ── PRODUCTION ── */
+        .prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .prod-card {
+            background: #f8fafc; border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .prod-val { font-size: 26px; font-weight: 800; color: var(--primary); }
+        .prod-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        /* ── LIST PRICE ── */
+        .liste-found { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #86efac; border-radius:13px; padding:18px 20px; }
+        .liste-kod-badge { display:inline-block; background:#16a34a; color:white; border-radius:6px; padding:3px 10px; font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:14px; }
+        .liste-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+        .liste-item { background:white; border-radius:10px; padding:12px; border:1px solid #bbf7d0; text-align:center; }
+        .liste-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+        .liste-val { font-size:20px; font-weight:800; color:var(--primary); margin-top:4px; }
+        .liste-val .lc { font-size:11px; font-weight:500; color:var(--muted); }
+        .liste-val.green { color:#16a34a; }
+        .liste-val.red   { color:#dc2626; }
+        .liste-notfound { background:#f8fafc; border:1px dashed var(--border2); border-radius:12px; padding:14px; text-align:center; color:var(--muted); font-size:13px; }
+
+        @media (max-width: 680px) {
+            /* ── Header ── */
+            header { flex-direction: column; gap: 10px; padding: 12px 14px; }
+            .header-left { width: 100%; }
+            header h1 { font-size: 15px; }
+            header p  { font-size: 11px; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .rate-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+            .rate-chip { min-width: unset; padding: 5px 8px; }
+            .rate-chip .rvalue { font-size: 13px; }
+            .rate-chip .rlabel { font-size: 9px; }
+            .rate-chip .rdate  { display: none; }
+            .refresh-btn { width: 32px; height: 32px; font-size: 15px; flex-shrink: 0; }
+
+            /* ── Container ── */
+            .container { padding: 14px 10px 40px; }
+            .card { padding: 16px 14px; border-radius: 12px; }
+
+            /* ── Inputs ── */
+            .input-grid { grid-template-columns: 1fr; }
+            .type-grid  { grid-template-columns: repeat(3,1fr); }
+
+            /* ── Cost items ── */
+            .cost-item { padding: 11px 12px; }
+            .cost-eur  { font-size: 15px; }
+            .cost-name { font-size: 13px; }
+            .cost-detail { font-size: 10px; }
+
+            /* ── Total bar ── */
+            .total-val { font-size: 24px; }
+
+            /* ── Production ── */
+            .prod-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .prod-val  { font-size: 22px; }
+
+            /* ── Liste fiyatı ── */
+            .liste-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .liste-val  { font-size: 16px; }
+            .liste-lbl  { font-size: 9px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <div class="header-icon">⚙️</div>
+        <div>
+            <h1>Elmas Uçlu Daire Testere</h1>
+            <p>Üretim Maliyeti Hesaplama Sistemi</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="rate-chips">
+            <div class="rate-chip highlight">
+                <div class="rlabel">1 € = ₺</div>
+                <input class="rate-input" id="inEurTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
+                <div class="rate-status" id="rDate">otomatik</div>
+            </div>
+            <div class="rate-chip highlight">
+                <div class="rlabel">1 $ = ₺</div>
+                <input class="rate-input" id="inUsdTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
+                <div class="rate-status" id="rStatus">—</div>
+            </div>
+            <div class="rate-chip">
+                <div class="rlabel">USD / EUR</div>
+                <div class="rvalue" id="rUsdEur">—</div>
+            </div>
+            <div class="rate-chip">
+                <div class="rlabel">TRY / EUR</div>
+                <div class="rvalue" id="rTryEur">—</div>
+            </div>
+        </div>
+        <button class="refresh-btn" id="refreshBtn" onclick="fetchRates()" title="Kurları Güncelle">↻</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- MOBİL UYARI BANNER -->
+    <div id="mobilWarn" style="display:none;background:#fef3c7;border:1px solid #fbbf24;border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#92400e;">
+        ⚠️ <strong>Bu dosyayı WhatsApp/mail içinden açtınız.</strong><br>
+        Hesaplama düzgün çalışması için lütfen sağ üstteki <strong>"Tarayıcıda Aç"</strong> seçeneğini kullanın (Safari veya Chrome).
+    </div>
+
+    <!-- INPUT CARD -->
+    <div class="card">
+        <div class="card-title">📐 Testere Bilgisi Girişi</div>
+        <div class="input-grid">
+            <div class="field field-wide">
+                <label>Testere Kodu</label>
+                <div class="hint">Format: TİP ÇAPxDİŞGENİŞLİĞİxGÖBEKxDİŞSAYISI &nbsp;•&nbsp; Örnek: AP 300x3.2x30x96</div>
+                <input type="text" id="sawCode" placeholder="AP 300x3.2x30x96"
+                    autocorrect="off" autocapitalize="characters"
+                    spellcheck="false" autocomplete="off"
+                    oninput="this.value=this.value.toUpperCase()"
+                    onkeydown="if(event.key==='Enter')calculate()">
+            </div>
+            <div class="field">
+                <label>Kaynak Teli Kg Fiyatı (₺)</label>
+                <div class="hint">Güncel kg başına TL fiyatı giriniz</div>
+                <input type="number" id="wirePrice" placeholder="65000" min="0"
+                    onkeydown="if(event.key==='Enter')calculate()">
+            </div>
+            <div class="field">
+                <label>İskonto Oranı (%)</label>
+                <div class="hint">Liste fiyatından iskonto (sonraki versiyonda aktif)</div>
+                <input type="number" id="discountRate" placeholder="0" min="0" max="100"
+                    onkeydown="if(event.key==='Enter')calculate()">
+            </div>
+        </div>
+
+        <button type="button" class="btn-calc" id="calcBtn"
+            onclick="calculate()"
+            ontouchend="calculate();event.preventDefault();">🔢 HESAPLA</button>
+        <div class="error-box" id="errorBox"></div>
+
+        <div class="divider"></div>
+        <div class="card-title" style="margin-bottom:10px">Testere Tip Rehberi</div>
+        <div class="type-grid">
+            <div class="type-chip"><strong>AP</strong>Alüminyum / PVC</div>
+            <div class="type-chip"><strong>HW</strong>Sert Ağaç</div>
+            <div class="type-chip"><strong>RP</strong>Yumuşak Ağaç</div>
+            <div class="type-chip"><strong>MRP</strong>Çoklu Dilme</div>
+            <div class="type-chip"><strong>TCG</strong>MDF / Laminat</div>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results">
+        <div class="card">
+
+            <!-- Saw header -->
+            <div class="saw-header">
+                <div class="saw-badge">
+                    <div class="saw-type-tag" id="rType">AP</div>
+                    <div>
+                        <div class="saw-title" id="rCode">—</div>
+                        <div class="saw-sub" id="rDesc">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost breakdown -->
+            <div class="card-title">💰 Maliyet Dökümü</div>
+            <div class="cost-list">
+                <div class="cost-item">
+                    <div class="cost-item-left">
+                        <div class="cost-icon ic-blue">🔵</div>
+                        <div>
+                            <div class="cost-name">Gövde Maliyeti</div>
+                            <div class="cost-detail" id="rBodyDet">—</div>
+                        </div>
+                    </div>
+                    <div class="cost-eur"><span id="rBodyCost">—</span><span class="cur">EUR</span></div>
+                </div>
+                <div class="cost-item">
+                    <div class="cost-item-left">
+                        <div class="cost-icon ic-green">💎</div>
+                        <div>
+                            <div class="cost-name">Diş Maliyeti</div>
+                            <div class="cost-detail" id="rToothDet">—</div>
+                        </div>
+                    </div>
+                    <div class="cost-eur"><span id="rToothCost">—</span><span class="cur">EUR</span></div>
+                </div>
+                <div class="cost-item">
+                    <div class="cost-item-left">
+                        <div class="cost-icon ic-orange">🔗</div>
+                        <div>
+                            <div class="cost-name">Kaynak Teli Maliyeti</div>
+                            <div class="cost-detail" id="rWireDet">—</div>
+                        </div>
+                    </div>
+                    <div class="cost-eur"><span id="rWireCost">—</span><span class="cur">EUR</span></div>
+                </div>
+                <div class="cost-item">
+                    <div class="cost-item-left">
+                        <div class="cost-icon" style="background:#f5f3ff">📦</div>
+                        <div>
+                            <div class="cost-name">Kutu Maliyeti</div>
+                            <div class="cost-detail">Sabit ambalaj maliyeti</div>
+                        </div>
+                    </div>
+                    <div class="cost-eur"><span id="rBoxCost">1,500</span><span class="cur">EUR</span></div>
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="total-bar">
+                <div>
+                    <div class="total-label">Toplam Üretim Maliyeti</div>
+                    <div class="total-sub" id="rRateInfo">—</div>
+                </div>
+                <div class="total-val"><span id="rTotal">—</span><span class="cur">€</span></div>
+            </div>
+
+            <!-- Production -->
+            <div class="card-title">⏱️ Üretim Bilgisi</div>
+            <div class="prod-grid">
+                <div class="prod-card">
+                    <div class="prod-val" id="rHourly">—</div>
+                    <div class="prod-lbl">Saatte Üretilen (adet)</div>
+                </div>
+                <div class="prod-card">
+                    <div class="prod-val" id="rDuration">—</div>
+                    <div class="prod-lbl">Üretim Süresi (dakika)</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- List price section -->
+            <div class="card-title">📋 Liste Fiyatı & Satış Fiyatı</div>
+            <div id="listeSec"></div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  VERİ TABANLARI
+// ═══════════════════════════════════════════════
+
+const GOVDE = [
+    {cap:120, k:3.9,  f:3.477588872},
+    {cap:121, k:2.2,  f:4.274777821},
+    {cap:125, k:2.5,  f:4.445768934},
+    {cap:161, k:4.4,  f:6.412166731},
+    {cap:200, k:2.5,  f:10.25946677},
+    {cap:210, k:1.8,  f:7.694600077},
+    {cap:230, k:1.8,  f:7.694600077},
+    {cap:250, k:2.2,  f:6.0},
+    {cap:250, k:2.5,  f:6.0},
+    {cap:250, k:2.6,  f:8.891537867},
+    {cap:300, k:2.2,  f:7.0},
+    {cap:300, k:2.5,  f:7.0},
+    {cap:350, k:2.2,  f:18.80902241},
+    {cap:350, k:2.4,  f:19.23650019},
+    {cap:350, k:2.6,  f:17.09911128},
+    {cap:350, k:2.8,  f:17.09911128},
+    {cap:350, k:3.0,  f:17.09911128},
+    {cap:400, k:2.5,  f:21.3738891},
+    {cap:400, k:2.8,  f:23.9387558},
+    {cap:400, k:3.0,  f:21.3738891},
+    {cap:400, k:3.2,  f:23.08380023},
+    {cap:420, k:2.2,  f:20.51893354},
+    {cap:420, k:3.2,  f:23.9387558},
+    {cap:450, k:2.6,  f:24.79371136},
+    {cap:450, k:2.8,  f:26.93110027},
+    {cap:450, k:3.0,  f:25.64866692},
+    {cap:450, k:3.2,  f:27.35857805},
+    {cap:450, k:3.6,  f:28.21353362},
+    {cap:450, k:4.8,  f:35.05317813},
+    {cap:500, k:2.8,  f:30.09443586},
+    {cap:500, k:3.2,  f:31.20587809},
+    {cap:500, k:3.4,  f:30.77840031},
+    {cap:500, k:3.8,  f:32.06083366},
+    {cap:500, k:4.8,  f:39.32795595},
+    {cap:520, k:3.5,  f:32.91578922},
+    {cap:550, k:2.9,  f:33.343267},
+    {cap:550, k:3.0,  f:35.05317813},
+    {cap:550, k:3.4,  f:36.76308926},
+    {cap:550, k:3.6,  f:38.47300039},
+    {cap:550, k:4.8,  f:41.89282264},
+    {cap:600, k:3.0,  f:33.77074478},
+    {cap:600, k:3.4,  f:35.90813369},
+    {cap:600, k:3.6,  f:37.61804482},
+    {cap:610, k:3.5,  f:47.87751159},
+    {cap:630, k:3.9,  f:50.44237828},
+    {cap:630, k:4.5,  f:57.2820228},
+    {cap:650, k:3.6,  f:50.44237828},
+    {cap:650, k:3.8,  f:53.86220054},
+    {cap:650, k:4.0,  f:53.86220054},
+    {cap:650, k:4.5,  f:61.55680062},
+    {cap:700, k:4.0,  f:62.41175618},
+    {cap:700, k:4.2,  f:68.39644513},
+    {cap:700, k:4.6,  f:70.10635626},
+    {cap:700, k:5.0,  f:71.81626739},
+    {cap:750, k:3.6,  f:73.52617852},
+    {cap:750, k:4.8,  f:82.93068972},
+    {cap:760, k:4.6,  f:82.93068972},
+    {cap:800, k:4.2,  f:94.04511206},
+    {cap:800, k:4.8,  f:95.75502318},
+    {cap:800, k:5.0,  f:99.17484544},
+    {cap:850, k:4.5,  f:94.04511206},
+    {cap:900, k:4.5,  f:102.5946677},
+];
+
+// uzunluk, genislik, marka, fiyatUSD (adet), telMM
+const DIS = [
+    {u:8.0,  g:3.4, marka:'Ceratizit', fUSD:0.1458333333, tel:15},
+    {u:8.0,  g:4.2, marka:'Ceratizit', fUSD:0.175,        tel:19},
+    {u:8.0,  g:4.8, marka:'Ceratizit', fUSD:0.21875,      tel:20},
+    {u:8.5,  g:5.6, marka:'Jg03',      fUSD:0.2822580645, tel:21},
+    {u:8.5,  g:6.2, marka:'Jg03',      fUSD:0.2951096121, tel:22},
+    {u:8.5,  g:6.4, marka:'Jg03',      fUSD:0.3181818182, tel:22},
+    {u:10.5, g:3.5, marka:'Ceratizit', fUSD:0.2611940299, tel:17},
+    {u:10.5, g:4.2, marka:'Ceratizit', fUSD:0.3645833333, tel:19},
+    {u:10.5, g:4.4, marka:'Ceratizit', fUSD:0.3804347826, tel:22},
+    {u:10.5, g:4.8, marka:'Ceratizit', fUSD:0.3571428571, tel:24},
+    {u:10.5, g:5.3, marka:'Ceratizit', fUSD:0.5494505495, tel:25},
+    {u:10.5, g:6.4, marka:'Ceratizit', fUSD:0.8152173913, tel:26},
+];
+
+// diş sayısı → {saatte, sure(dk)}
+const URETIM = {
+    120: {saatte: 1.62,  sure: 37},
+    96:  {saatte: 2.4,   sure: 25},
+    80:  {saatte: 2.61,  sure: 23},
+    72:  {saatte: 2.86,  sure: 21},
+    60:  {saatte: 3.33,  sure: 18},
+    48:  {saatte: 4.29,  sure: 14},
+    40:  {saatte: 5.45,  sure: 11},
+    28:  {saatte: 5.0,   sure: null},
+};
+
+// ═══════════════════════════════════════════════
+//  LİSTE FİYATLARI  (D=çap, B=finish genişlik, d=göbek, Z=diş sayısı)
+//  d alanı tek sayı veya dizi [30,32] olabilir
+// ═══════════════════════════════════════════════
+const LISTE_FIYAT = {
+  // ── AP → ALM ──────────────────────────────
+  'AP': [
+    {kod:'ALM-115-01', D:115, B:4.0, d:[22],     Z:20,  eur:53},
+    {kod:'ALM-140-01', D:140, B:2.2, d:[30],     Z:48,  eur:59},
+    {kod:'ALM-150-01', D:150, B:3.0, d:[30],     Z:48,  eur:60},
+    {kod:'ALM-160-01', D:160, B:2.2, d:[30],     Z:48,  eur:60},
+    {kod:'ALM-170-01', D:170, B:3.0, d:[30],     Z:48,  eur:63},
+    {kod:'ALM-180-01', D:180, B:3.0, d:[30],     Z:48,  eur:64},
+    {kod:'ALM-180-02', D:180, B:3.0, d:[30],     Z:58,  eur:72},
+    {kod:'ALM-190-01', D:190, B:2.0, d:[30],     Z:58,  eur:73},
+    {kod:'ALM-190-02', D:190, B:3.0, d:[30],     Z:58,  eur:72},
+    {kod:'ALM-200-01', D:200, B:3.0, d:[30],     Z:40,  eur:66},
+    {kod:'ALM-200-02', D:200, B:3.0, d:[30,32],  Z:64,  eur:74},
+    {kod:'ALM-200-03', D:200, B:2.0, d:[30,32],  Z:64,  eur:76},
+    {kod:'ALM-200-04', D:200, B:2.0, d:[32],     Z:72,  eur:85},
+    {kod:'ALM-210-01', D:210, B:2.0, d:[30],     Z:64,  eur:84},
+    {kod:'ALM-210-02', D:210, B:3.0, d:[30],     Z:64,  eur:83},
+    {kod:'ALM-230-01', D:230, B:3.0, d:[30],     Z:36,  eur:63},
+    {kod:'ALM-230-02', D:230, B:3.2, d:[30],     Z:62,  eur:81},
+    {kod:'ALM-230-03', D:230, B:3.2, d:[30],     Z:72,  eur:88},
+    {kod:'ALM-235-01', D:235, B:3.0, d:[30],     Z:30,  eur:65},
+    {kod:'ALM-250-01', D:250, B:3.2, d:[30,32],  Z:60,  eur:81},
+    {kod:'ALM-250-02', D:250, B:3.2, d:[30,32],  Z:80,  eur:80},
+    {kod:'ALM-250-03', D:250, B:2.0, d:[30],     Z:80,  eur:82},
+    {kod:'ALM-250-04', D:250, B:2.4, d:[30],     Z:80,  eur:82},
+    {kod:'ALM-270-01', D:270, B:2.4, d:[30],     Z:48,  eur:78},
+    {kod:'ALM-270-02', D:270, B:3.2, d:[30],     Z:88,  eur:108},
+    {kod:'ALM-275-01', D:275, B:2.4, d:[30],     Z:48,  eur:78},
+    {kod:'ALM-280-01', D:280, B:2.4, d:[30],     Z:64,  eur:88},
+    {kod:'ALM-280-02', D:280, B:3.2, d:[32],     Z:88,  eur:110},
+    {kod:'ALM-300-01', D:300, B:3.2, d:[30],     Z:48,  eur:78},
+    {kod:'ALM-300-02', D:300, B:3.2, d:[30],     Z:60,  eur:88},
+    {kod:'ALM-300-03', D:300, B:3.2, d:[30,32],  Z:72,  eur:95},
+    {kod:'ALM-300-04', D:300, B:3.2, d:[30,32],  Z:96,  eur:98},
+    {kod:'ALM-300-05', D:300, B:2.0, d:[30,32],  Z:96,  eur:100},
+    {kod:'ALM-300-06', D:300, B:2.4, d:[30,32],  Z:96,  eur:100},
+    {kod:'ALM-305-01', D:305, B:3.2, d:[30],     Z:96,  eur:105},
+    {kod:'ALM-320-01', D:320, B:3.2, d:[32],     Z:96,  eur:134},
+    {kod:'ALM-330-01', D:330, B:3.6, d:[30],     Z:108, eur:140},
+    {kod:'ALM-350-01', D:350, B:3.6, d:[30],     Z:84,  eur:135},
+    {kod:'ALM-350-02', D:350, B:2.4, d:[30,32],  Z:96,  eur:140},
+    {kod:'ALM-350-03', D:350, B:3.6, d:[30,32],  Z:108, eur:144},
+    {kod:'ALM-355-01', D:355, B:2.0, d:[30],     Z:50,  eur:112},
+    {kod:'ALM-380-01', D:380, B:3.6, d:[32],     Z:56,  eur:140},
+    {kod:'ALM-380-02', D:380, B:3.6, d:[32],     Z:110, eur:175},
+    {kod:'ALM-400-01', D:400, B:4.0, d:[30],     Z:60,  eur:143},
+    {kod:'ALM-400-02', D:400, B:4.0, d:[30],     Z:72,  eur:148},
+    {kod:'ALM-400-03', D:400, B:4.0, d:[30,32],  Z:96,  eur:162},
+    {kod:'ALM-400-04', D:400, B:4.0, d:[30,32],  Z:108, eur:177},
+    {kod:'ALM-400-05', D:400, B:4.0, d:[30,32],  Z:120, eur:188},
+    {kod:'ALM-420-01', D:420, B:2.8, d:[30],     Z:60,  eur:140},
+    {kod:'ALM-420-02', D:420, B:4.0, d:[30],     Z:72,  eur:170},
+    {kod:'ALM-420-03', D:420, B:2.8, d:[30],     Z:80,  eur:161},
+    {kod:'ALM-420-04', D:420, B:4.0, d:[30,32],  Z:96,  eur:187},
+    {kod:'ALM-420-05', D:420, B:4.0, d:[30,32],  Z:108, eur:207},
+    {kod:'ALM-420-06', D:420, B:4.0, d:[30,32],  Z:120, eur:216},
+    {kod:'ALM-450-01', D:450, B:4.0, d:[30],     Z:72,  eur:176},
+    {kod:'ALM-450-02', D:450, B:4.0, d:[30],     Z:96,  eur:194},
+    {kod:'ALM-450-03', D:450, B:4.0, d:[30,32],  Z:108, eur:118},
+    {kod:'ALM-450-04', D:450, B:4.0, d:[32],     Z:120, eur:226},
+    {kod:'ALM-500-01', D:500, B:4.0, d:[30],     Z:60,  eur:180},
+    {kod:'ALM-500-02', D:500, B:4.0, d:[30],     Z:72,  eur:187},
+    {kod:'ALM-500-03', D:500, B:4.0, d:[30],     Z:96,  eur:208},
+    {kod:'ALM-500-04', D:500, B:4.0, d:[30],     Z:108, eur:235},
+    {kod:'ALM-500-05', D:500, B:4.0, d:[30,32],  Z:120, eur:248},
+    {kod:'ALM-500-06', D:500, B:4.0, d:[30,32],  Z:138, eur:272},
+    {kod:'ALM-500-07', D:500, B:4.0, d:[30],     Z:160, eur:305},
+    {kod:'ALM-550-01', D:550, B:4.4, d:[50],     Z:68,  eur:257},
+    {kod:'ALM-550-02', D:550, B:4.4, d:[30],     Z:72,  eur:265},
+    {kod:'ALM-550-03', D:550, B:4.4, d:[30],     Z:96,  eur:300},
+    {kod:'ALM-550-04', D:550, B:4.4, d:[30,32],  Z:120, eur:356},
+    {kod:'ALM-600-01', D:600, B:4.4, d:[50],     Z:72,  eur:273},
+    {kod:'ALM-600-02', D:600, B:4.4, d:[30],     Z:96,  eur:338},
+    {kod:'ALM-600-03', D:600, B:4.4, d:[30],     Z:120, eur:398},
+    {kod:'ALM-600-04', D:600, B:4.4, d:[30],     Z:138, eur:440},
+    {kod:'ALM-600-05', D:600, B:4.0, d:[30],     Z:160, eur:500},
+  ],
+  // ── HW → AHS ──────────────────────────────
+  'HW': [
+    {kod:'AHS-100-01', D:100, B:3.0, d:[30], Z:18,  eur:35},
+    {kod:'AHS-150-01', D:150, B:3.0, d:[30], Z:24,  eur:38},
+    {kod:'AHS-150-02', D:150, B:3.0, d:[30], Z:48,  eur:54},
+    {kod:'AHS-160-01', D:160, B:3.0, d:[30], Z:24,  eur:39},
+    {kod:'AHS-160-02', D:160, B:3.0, d:[30], Z:48,  eur:54},
+    {kod:'AHS-180-01', D:180, B:3.0, d:[30], Z:24,  eur:39},
+    {kod:'AHS-180-02', D:180, B:3.0, d:[30], Z:30,  eur:47},
+    {kod:'AHS-180-03', D:180, B:3.0, d:[30], Z:40,  eur:54},
+    {kod:'AHS-180-04', D:180, B:3.0, d:[30], Z:48,  eur:60},
+    {kod:'AHS-200-01', D:200, B:3.0, d:[30], Z:40,  eur:60},
+    {kod:'AHS-200-02', D:200, B:3.0, d:[30], Z:48,  eur:64},
+    {kod:'AHS-200-03', D:200, B:3.0, d:[30], Z:64,  eur:73},
+    {kod:'AHS-200-04', D:200, B:4.4, d:[30], Z:36,  eur:77},
+    {kod:'AHS-250-01', D:250, B:3.2, d:[30], Z:40,  eur:63},
+    {kod:'AHS-250-02', D:250, B:3.2, d:[30], Z:48,  eur:66},
+    {kod:'AHS-250-03', D:250, B:3.2, d:[30], Z:60,  eur:78},
+    {kod:'AHS-250-04', D:250, B:3.2, d:[30], Z:80,  eur:84},
+    {kod:'AHS-300-01', D:300, B:3.2, d:[30], Z:48,  eur:71},
+    {kod:'AHS-300-02', D:300, B:3.2, d:[30], Z:60,  eur:83},
+    {kod:'AHS-300-03', D:300, B:3.2, d:[30], Z:72,  eur:91},
+    {kod:'AHS-300-04', D:300, B:3.2, d:[30], Z:96,  eur:100},
+    {kod:'AHS-350-01', D:350, B:3.6, d:[30], Z:54,  eur:106},
+    {kod:'AHS-350-02', D:350, B:3.6, d:[30], Z:72,  eur:133},
+    {kod:'AHS-350-03', D:350, B:3.6, d:[30], Z:84,  eur:143},
+    {kod:'AHS-350-04', D:350, B:3.6, d:[30], Z:108, eur:145},
+    {kod:'AHS-400-01', D:400, B:4.0, d:[30], Z:60,  eur:140},
+    {kod:'AHS-400-02', D:400, B:4.0, d:[30], Z:72,  eur:144},
+    {kod:'AHS-400-03', D:400, B:4.0, d:[30], Z:96,  eur:160},
+    {kod:'AHS-400-04', D:400, B:4.0, d:[30], Z:120, eur:194},
+    {kod:'AHS-450-01', D:450, B:4.0, d:[30], Z:54,  eur:148},
+    {kod:'AHS-450-02', D:450, B:4.0, d:[30], Z:72,  eur:171},
+    {kod:'AHS-450-03', D:450, B:4.0, d:[30], Z:96,  eur:191},
+    {kod:'AHS-450-04', D:450, B:4.0, d:[30], Z:120, eur:225},
+    {kod:'AHS-500-01', D:500, B:4.0, d:[30], Z:60,  eur:177},
+    {kod:'AHS-500-02', D:500, B:4.0, d:[30], Z:72,  eur:183},
+    {kod:'AHS-500-03', D:500, B:4.0, d:[30], Z:96,  eur:205},
+    {kod:'AHS-500-04', D:500, B:4.0, d:[30], Z:120, eur:240},
+    {kod:'AHS-550-01', D:550, B:4.0, d:[30], Z:60,  eur:181},
+    {kod:'AHS-600-01', D:600, B:4.4, d:[30], Z:72,  eur:260},
+  ],
+  // ── RP → BG ───────────────────────────────
+  'RP': [
+    {kod:'BG-200-01', D:200, B:3.0, d:[30], Z:20, eur:43},
+    {kod:'BG-250-01', D:250, B:3.2, d:[30], Z:24, eur:45},
+    {kod:'BG-300-01', D:300, B:3.2, d:[30], Z:28, eur:51},
+    {kod:'BG-350-01', D:350, B:3.6, d:[30], Z:32, eur:85},
+    {kod:'BG-400-01', D:400, B:4.0, d:[30], Z:36, eur:117},
+    {kod:'BG-400-02', D:400, B:4.0, d:[30], Z:42, eur:124},
+    {kod:'BG-450-01', D:450, B:4.0, d:[30], Z:42, eur:129},
+    {kod:'BG-500-01', D:500, B:4.0, d:[30], Z:48, eur:151},
+    {kod:'BG-550-01', D:550, B:4.0, d:[30], Z:48, eur:168},
+    {kod:'BG-600-01', D:600, B:4.0, d:[30], Z:56, eur:178},
+    {kod:'BG-600-02', D:600, B:4.4, d:[30], Z:56, eur:200},
+  ],
+  // ── TCG → TRF/TRFS ────────────────────────
+  'TCG': [
+    {kod:'TRF-160-01',  D:160, B:2.2, d:[20],    Z:48,  eur:53},
+    {kod:'TRF-180-01',  D:180, B:2.4, d:[30],    Z:58,  eur:74},
+    {kod:'TRF-190-02',  D:190, B:2.0, d:[30],    Z:58,  eur:80},
+    {kod:'TRF-200-01',  D:200, B:3.0, d:[30],    Z:48,  eur:66},
+    {kod:'TRFS-200-02', D:200, B:3.2, d:[30],    Z:64,  eur:74},
+    {kod:'TRFS-200-03', D:200, B:2.4, d:[30],    Z:64,  eur:76},
+    {kod:'TRFS-200-04', D:200, B:2.0, d:[30],    Z:64,  eur:76},
+    {kod:'TRFS-220-01', D:220, B:3.3, d:[30],    Z:64,  eur:83},
+    {kod:'TRFS-230-01', D:230, B:3.0, d:[30],    Z:72,  eur:85},
+    {kod:'TRFS-230-02', D:230, B:3.3, d:[20],    Z:64,  eur:84},
+    {kod:'TRFS-250-01', D:250, B:3.2, d:[30],    Z:80,  eur:84},
+    {kod:'TRFS-250-02', D:250, B:2.0, d:[30],    Z:80,  eur:84},
+    {kod:'TRFS-250-03', D:250, B:3.2, d:[30],    Z:80,  eur:82},
+    {kod:'TRFS-250-04', D:250, B:2.4, d:[30],    Z:80,  eur:84},
+    {kod:'TRFS-280-01', D:280, B:3.2, d:[30],    Z:64,  eur:85},
+    {kod:'TRFS-280-02', D:280, B:3.2, d:[30],    Z:88,  eur:105},
+    {kod:'TRFS-300-01', D:300, B:3.2, d:[30],    Z:60,  eur:92},
+    {kod:'TRFS-300-02', D:300, B:3.2, d:[30],    Z:72,  eur:98},
+    {kod:'TRFS-300-03', D:300, B:3.2, d:[30],    Z:96,  eur:100},
+    {kod:'TRFS-300-04', D:300, B:2.0, d:[30],    Z:96,  eur:102},
+    {kod:'TRFS-300-05', D:300, B:2.4, d:[30],    Z:96,  eur:102},
+    {kod:'TRFS-350-01', D:350, B:3.6, d:[30],    Z:84,  eur:135},
+    {kod:'TRFS-350-02', D:350, B:3.6, d:[30],    Z:108, eur:146},
+    {kod:'TRFS-400-01', D:400, B:4.0, d:[30],    Z:72,  eur:166},
+    {kod:'TRFS-400-02', D:400, B:4.0, d:[30],    Z:96,  eur:175},
+    {kod:'TRFS-400-03', D:400, B:4.0, d:[30],    Z:120, eur:198},
+    {kod:'TRFS-450-01', D:450, B:4.0, d:[30],    Z:72,  eur:274},
+    {kod:'TRFS-450-02', D:450, B:4.0, d:[30],    Z:120, eur:236},
+    {kod:'TRFS-500-01', D:500, B:4.0, d:[30],    Z:120, eur:272},
+  ],
+};
+
+function findListeFiyat(tip, D, B, d, Z) {
+    const tablo = LISTE_FIYAT[tip];
+    if (!tablo) return null;
+    return tablo.find(r =>
+        r.D === D &&
+        Math.abs(r.B - B) < 0.05 &&
+        r.d.includes(d) &&
+        r.Z === Z
+    ) || null;
+}
+
+const TOLERANS = { AP:0.8, HW:1.0, RP:1.2, MRP:1.2, TCG:1.0 };
+const TIP_DIS  = { AP:[8.0,8.5], TCG:[8.0,8.5], HW:[10.5], RP:[10.5], MRP:[10.5] };
+const TIP_ISIM = { AP:'Alüminyum / PVC', HW:'Sert Ağaç', RP:'Yumuşak Ağaç', MRP:'Çoklu Dilme', TCG:'MDF / Laminat' };
+
+// ═══════════════════════════════════════════════
+//  DÖVİZ KURLARI
+// ═══════════════════════════════════════════════
+
+let RATES = { usdEur: null, tryEur: null };
+
+function applyRates(eurTry, usdTry, kaynak) {
+    RATES.tryEur = 1 / eurTry;
+    RATES.usdEur = usdTry / eurTry;
+    document.getElementById('inEurTry').value  = eurTry.toFixed(2);
+    document.getElementById('inUsdTry').value  = usdTry.toFixed(2);
+    document.getElementById('rUsdEur').textContent = RATES.usdEur.toFixed(4);
+    document.getElementById('rTryEur').textContent = RATES.tryEur.toFixed(5);
+    document.getElementById('rDate').textContent   = kaynak;
+    document.getElementById('rStatus').textContent = kaynak;
+}
+
+// Kullanıcı kuru elle değiştirince
+function onManualRate() {
+    const eurTry = parseFloat(document.getElementById('inEurTry').value);
+    const usdTry = parseFloat(document.getElementById('inUsdTry').value);
+    if (eurTry > 0 && usdTry > 0) {
+        RATES.tryEur = 1 / eurTry;
+        RATES.usdEur = usdTry / eurTry;
+        document.getElementById('rUsdEur').textContent = RATES.usdEur.toFixed(4);
+        document.getElementById('rTryEur').textContent = RATES.tryEur.toFixed(5);
+        document.getElementById('rDate').textContent   = 'manuel';
+        document.getElementById('rStatus').textContent = 'manuel';
+    }
+}
+
+async function fetchRates() {
+    const btn = document.getElementById('refreshBtn');
+    btn.classList.add('spinning'); btn.disabled = true;
+    try {
+        const [r1, r2] = await Promise.all([
+            fetch('https://api.frankfurter.app/latest?from=USD&to=EUR').then(r => r.json()),
+            fetch('https://api.frankfurter.app/latest?from=TRY&to=EUR').then(r => r.json()),
+        ]);
+        const usdEur = r1.rates.EUR;
+        const tryEur = r2.rates.EUR;
+        const eurTry = 1 / tryEur;
+        const usdTry = usdEur / tryEur;
+        applyRates(eurTry, usdTry, r1.date || 'canlı');
+    } catch(e) {
+        // API'ye ulaşılamadı — alanlar boş kalır, kullanıcı manuel girer
+        document.getElementById('rDate').textContent   = '⚠ elle girin';
+        document.getElementById('rStatus').textContent = '⚠ elle girin';
+        if (!RATES.tryEur) {
+            // Son çare: tahmini değer yükle
+            applyRates(38.0, 35.0, '⚠ tahmini');
+        }
+    } finally {
+        btn.classList.remove('spinning'); btn.disabled = false;
+    }
+}
+
+// ═══════════════════════════════════════════════
+//  ALGORİTMA
+// ═══════════════════════════════════════════════
+
+function parseSaw(raw) {
+    // Mobil klavye uyumu: ×, *, -, noktalı virgül, çift boşluk hepsini temizle
+    let s = raw.trim().toUpperCase()
+        .replace(/[,،]/g, '.')          // virgül → nokta (ondalık)
+        .replace(/[×✕✗*]/g, 'X')       // çarpı sembolü → X
+        .replace(/\s+/g, ' ');          // çoklu boşluk → tek
+
+    // Tip kısmını ayır (ilk boşluğa kadar)
+    const firstSpace = s.indexOf(' ');
+    if (firstSpace === -1) return null;
+
+    const tip  = s.substring(0, firstSpace).trim();
+    const rest = s.substring(firstSpace).trim();
+    if (!TOLERANS[tip]) return null;
+
+    // Boyutları ayır: X veya - veya / ile ayrılmış 4 sayı
+    const parts = rest.split(/[X\-\/]+/);
+    if (parts.length !== 4) return null;
+
+    const [cap, fg, gobek, ds] = parts.map(v => parseFloat(v.trim()));
+    if ([cap, fg, gobek, ds].some(v => isNaN(v) || v <= 0)) return null;
+
+    return { tip, cap, fg, gobek, ds: Math.round(ds) };
+}
+
+// Belirli bir çap için kalınlık interpolasyonlu fiyat döndürür
+function govdePriceForCap(targetCap, minK) {
+    const sameCap = GOVDE.filter(g => g.cap === targetCap).sort((a, b) => a.k - b.k);
+    if (sameCap.length === 0) return null;
+
+    const aboveList = sameCap.filter(g => g.k >= minK - 0.001);
+    if (aboveList.length === 0) return null;
+
+    const above = aboveList[0];
+
+    // Tam kalınlık eşleşmesi
+    if (Math.abs(above.k - minK) < 0.001) {
+        return { f: above.f, k: above.k, kInterp: false };
+    }
+
+    // Kalınlık interpolasyonu
+    const belowList = sameCap.filter(g => g.k < minK - 0.001);
+    if (belowList.length === 0) {
+        return { f: above.f, k: above.k, kInterp: false };
+    }
+    const below = belowList[belowList.length - 1];
+    const ratio  = (minK - below.k) / (above.k - below.k);
+    return {
+        f: below.f + (above.f - below.f) * ratio,
+        k: minK, kInterp: true, kBelow: below, kAbove: above,
+    };
+}
+
+function findGovde(cap, minK) {
+    const allCaps = [...new Set(GOVDE.map(g => g.cap))].sort((a, b) => a - b);
+
+    // 1. Tam çap eşleşmesi
+    if (allCaps.includes(cap)) {
+        const r = govdePriceForCap(cap, minK);
+        if (!r) return null;
+        return { cap, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kBelow: r.kBelow, kAbove: r.kAbove };
+    }
+
+    // 2. Çap interpolasyonu
+    const cBelow = [...allCaps].reverse().find(c => c < cap);
+    const cAbove = allCaps.find(c => c > cap);
+
+    if (!cBelow && !cAbove) return null;
+
+    if (!cBelow) {
+        const r = govdePriceForCap(cAbove, minK);
+        return r ? { cap: cAbove, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp } : null;
+    }
+    if (!cAbove) {
+        const r = govdePriceForCap(cBelow, minK);
+        return r ? { cap: cBelow, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp } : null;
+    }
+
+    const rBelow = govdePriceForCap(cBelow, minK);
+    const rAbove = govdePriceForCap(cAbove, minK);
+
+    if (!rBelow && !rAbove) return null;
+    if (!rBelow) return { cap: cAbove, f: rAbove.f, k: rAbove.k, capInterp: false, kInterp: rAbove.kInterp };
+    if (!rAbove) return { cap: cBelow, f: rBelow.f, k: rBelow.k, capInterp: false, kInterp: rBelow.kInterp };
+
+    // İki çap arasında lineer interpolasyon
+    const capRatio = (cap - cBelow) / (cAbove - cBelow);
+    const interpF  = rBelow.f + (rAbove.f - rBelow.f) * capRatio;
+
+    return {
+        cap, f: interpF, k: minK,
+        capInterp: true, cBelow, fBelow: rBelow.f, cAbove, fAbove: rAbove.f,
+        kInterp: false,
+    };
+}
+
+function findDis(tip, fg) {
+    const uzunluklar = TIP_DIS[tip];
+    let best = null, bestFark = Infinity;
+    for (const u of uzunluklar) {
+        const adaylar = DIS
+            .filter(d => d.u === u && d.g > fg - 0.001)   // genişlik >= finish
+            .sort((a,b) => a.g - b.g);
+        if (adaylar.length > 0) {
+            const fark = adaylar[0].g - fg;
+            if (fark < bestFark) { bestFark = fark; best = adaylar[0]; }
+        }
+    }
+    return best;
+}
+
+// ═══════════════════════════════════════════════
+//  HESAPLA
+// ═══════════════════════════════════════════════
+
+function calculate() {
+    try {
+        _doCalculate();
+    } catch(err) {
+        showError('Hesaplama hatası: ' + err.message);
+        console.error(err);
+    }
+}
+
+function _doCalculate() {
+    const sawCode   = document.getElementById('sawCode').value;
+    const wirePrice = parseFloat(document.getElementById('wirePrice').value);
+
+    hideError();
+
+    // Kur: önce input alanlarından oku (manuel veya otomatik doldurulmuş)
+    const eurTryIn = parseFloat(document.getElementById('inEurTry').value);
+    const usdTryIn = parseFloat(document.getElementById('inUsdTry').value);
+    if (eurTryIn > 0 && usdTryIn > 0) {
+        RATES.tryEur = 1 / eurTryIn;
+        RATES.usdEur = usdTryIn / eurTryIn;
+    }
+
+    if (!sawCode.trim())               return showError('Lütfen testere kodunu giriniz.');
+    if (isNaN(wirePrice)||wirePrice<=0) return showError('Lütfen geçerli bir kaynak teli fiyatı giriniz.');
+    if (!RATES.usdEur)                 return showError('Döviz kurları girilmedi. Lütfen 1€=₺ ve 1$=₺ kutularını doldurun.');
+
+    const p = parseSaw(sawCode);
+    if (!p) return showError('Geçersiz format. Örnek: AP 300x3.2x30x96');
+
+    const { tip, cap, fg, ds } = p;
+    const tolerans = TOLERANS[tip];
+    const minK     = parseFloat((fg - tolerans).toFixed(4));
+
+    const govde = findGovde(cap, minK);
+    if (!govde) return showError(
+        `${cap}mm çap için uygun gövde bulunamadı. (aranan min. kalınlık: ${minK.toFixed(1)}mm)`);
+
+    const dis = findDis(tip, fg);
+    if (!dis) return showError(
+        `${tip} tipi için ${fg}mm genişliğinden büyük uygun diş bulunamadı.`);
+
+    // ── Maliyetler ──
+    const govdeMaliyet = govde.f;                                          // EUR
+    const disAdetEUR   = dis.fUSD * RATES.usdEur;                         // USD→EUR
+    const disMaliyet   = disAdetEUR * ds;                                  // EUR
+
+    const telToplamMM  = dis.tel * ds;
+    const telGram      = (telToplamMM / 500000) * 1000;
+    const telTRY       = (telToplamMM / 500000) * wirePrice;
+    const telMaliyet   = telTRY * RATES.tryEur;                            // TRY→EUR
+
+    const KUTU_MALIYET = 1.5;                                               // EUR sabit
+    const toplam = govdeMaliyet + disMaliyet + telMaliyet + KUTU_MALIYET;
+
+    // ── Üretim bilgisi ──
+    const uretim = URETIM[ds];
+
+    // ── DOM güncelle ──
+    set('rType',     tip);
+    set('rCode',     sawCode.trim().toUpperCase());
+    set('rDesc',     `${cap}mm çap • ${ds} diş • ${TIP_ISIM[tip]}`);
+
+    // Gövde açıklaması: çap ve kalınlık interpolasyonu notları
+    let govdeNot = '';
+    if (govde.capInterp) {
+        govdeNot = ` (çap interp: Ø${govde.cBelow}mm=${fmt(govde.fBelow)}€ / Ø${govde.cAbove}mm=${fmt(govde.fAbove)}€)`;
+    } else if (govde.kInterp && govde.kBelow) {
+        govdeNot = ` (kalınlık interp: ${govde.kBelow.k}mm=${fmt(govde.kBelow.f)}€ / ${govde.kAbove.k}mm=${fmt(govde.kAbove.f)}€)`;
+    } else if (govde.k > minK + 0.001) {
+        govdeNot = ` (istenen ≥${minK.toFixed(2)}mm, seçilen ${govde.k}mm)`;
+    }
+    set('rBodyDet',  `Ø${govde.cap}mm × ${govde.k.toFixed(2)}mm kalınlık${govdeNot}`);
+    set('rBodyCost', fmt(govdeMaliyet));
+
+    set('rToothDet', `${dis.marka} • ${dis.u}×${dis.g}mm • ${ds} adet`);
+    set('rToothCost',fmt(disMaliyet));
+
+    set('rWireDet',  `${dis.tel}mm/diş × ${ds} diş = ${telToplamMM}mm (~${telGram.toFixed(2)}g)`);
+    set('rWireCost', fmt(telMaliyet));
+
+    set('rTotal',    fmt(toplam));
+    set('rRateInfo', `USD/EUR: ${RATES.usdEur.toFixed(4)} | TRY/EUR: ${RATES.tryEur.toFixed(5)}`);
+
+    if (uretim) {
+        set('rHourly',   uretim.saatte.toFixed(2));
+        set('rDuration', uretim.sure !== null ? uretim.sure + ' dk' : '—');
+    } else {
+        set('rHourly', '—'); set('rDuration', '—');
+    }
+
+    // ── Liste Fiyatı ──
+    const iskonto    = parseFloat(document.getElementById('discountRate').value) || 0;
+    const listeSonuc = findListeFiyat(tip, cap, fg, p.gobek, ds);
+    const listeSec   = document.getElementById('listeSec');
+
+    if (listeSonuc) {
+        const satisFiyat = listeSonuc.eur * (1 - iskonto / 100);
+        const karEur     = satisFiyat - toplam;
+        const karPct     = satisFiyat > 0 ? (karEur / satisFiyat) * 100 : 0;
+        const satisTry   = RATES.tryEur > 0 ? satisFiyat / RATES.tryEur : 0;
+        listeSec.innerHTML = `
+        <div class="liste-found">
+            <span class="liste-kod-badge">${listeSonuc.kod}</span>
+            <div class="liste-grid">
+                <div class="liste-item">
+                    <div class="liste-lbl">Liste Fiyatı</div>
+                    <div class="liste-val">${listeSonuc.eur.toFixed(0)}<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">İskonto & Satış</div>
+                    <div class="liste-val">${iskonto > 0 ? '%'+iskonto+' → ' : ''}${satisFiyat.toFixed(2)}<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Satış Fiyatı (₺)</div>
+                    <div class="liste-val">${Math.round(satisTry).toLocaleString('tr-TR')}<span class="lc"> ₺</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Kar Marjı</div>
+                    <div class="liste-val ${karPct >= 0 ? 'green' : 'red'}">${karPct.toFixed(1)}<span class="lc">%</span></div>
+                </div>
+            </div>
+        </div>`;
+    } else {
+        listeSec.innerHTML = `<div class="liste-notfound">
+            Bu ürün için katalogda liste fiyatı bulunamadı.<br>
+            <small>${tip} tipi • Ø${cap}mm • B${fg}mm • d${p.gobek} • Z${ds}</small>
+        </div>`;
+    }
+
+    document.getElementById('results').style.display = 'block';
+    setTimeout(function() {
+        document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 100);
+}
+
+// ═══════════════════════════════════════════════
+//  YARDIMCI
+// ═══════════════════════════════════════════════
+
+function fmt(n) { return n.toFixed(3).replace('.',','); }
+function set(id, val) { document.getElementById(id).textContent = val; }
+function showError(msg) {
+    const el = document.getElementById('errorBox');
+    el.textContent = msg; el.style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+    // Mobilde hata görünsün diye scroll
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
+}
+function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+
+// ── Global hata yakalayıcı ──
+window.onerror = function(msg, src, line) {
+    var el = document.getElementById('errorBox');
+    if (el) { el.textContent = 'JS Hata [satır ' + line + ']: ' + msg; el.style.display = 'block'; }
+    return false;
+};
+
+// ── WhatsApp / in-app webview uyarısı ──
+(function() {
+    var ua = navigator.userAgent || '';
+    var isInApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|Twitter|Snapchat|MicroMessenger/i.test(ua);
+    if (isInApp) {
+        var w = document.getElementById('mobilWarn');
+        if (w) w.style.display = 'block';
+    }
+})();
+
+// ── İlk yükleme ──
+fetchRates();
+</script>
+</body>
+</html>
