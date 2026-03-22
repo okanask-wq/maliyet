@@ -492,12 +492,7 @@
                     oninput="this.value=this.value.toUpperCase()"
                     onkeydown="if(event.key==='Enter')calculate()">
             </div>
-            <div class="field">
-                <label>Kaynak Teli Kg Fiyatı (₺)</label>
-                <div class="hint">Güncel kg başına TL fiyatı giriniz</div>
-                <input type="number" id="wirePrice" placeholder="65000" min="0"
-                    onkeydown="if(event.key==='Enter')calculate()">
-            </div>
+            <!-- kaynak teli fiyatı ayarlar panelinden yönetilir -->
             <div class="field">
                 <label>İskonto Oranı (%)</label>
                 <div class="hint">Liste fiyatından iskonto (sonraki versiyonda aktif)</div>
@@ -675,6 +670,18 @@
           </div>
         </div>
 
+        <!-- Kaynak Teli -->
+        <div class="settings-section">
+          <h3>🔗 Kaynak Teli Fiyatı</h3>
+          <div class="price-row">
+            <div class="price-row-label">Kaynak teli<span>₺/kg</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input class="price-input" id="sWire" type="number" step="100" min="0" style="width:110px">
+              <span style="font-size:12px;color:var(--muted)">₺/kg</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Kutu maliyeti -->
         <div class="settings-section">
           <h3>📦 Kutu Maliyeti</h3>
@@ -814,6 +821,8 @@ const SABIT_KATEGORILER = [
 ];
 let SABIT_GIDERLER = { kira: 40000, maas: 48000, elektrik: 25000, ongorulemeyen: 10000, diger: 5000 };
 let AYLIK_CALISMA_SAATI = 198; // 9 saat × 22 gün (varsayılan)
+const KAYNAK_TEL_VARSAYILAN = 50000; // ₺/kg
+let KAYNAK_TEL_FIYAT = KAYNAK_TEL_VARSAYILAN;
 
 // diş sayısı → {saatte, sure(dk)}
 const URETIM = {
@@ -1252,7 +1261,7 @@ function calculate() {
 
 function _doCalculate() {
     const sawCode   = document.getElementById('sawCode').value;
-    const wirePrice = parseFloat(document.getElementById('wirePrice').value);
+    const wirePrice = KAYNAK_TEL_FIYAT;
 
     hideError();
 
@@ -1265,7 +1274,6 @@ function _doCalculate() {
     }
 
     if (!sawCode.trim())               return showError('Lütfen testere kodunu giriniz.');
-    if (isNaN(wirePrice)||wirePrice<=0) return showError('Lütfen geçerli bir kaynak teli fiyatı giriniz.');
     if (!RATES.usdEur)                 return showError('Döviz kurları girilmedi. Lütfen 1€=₺ ve 1$=₺ kutularını doldurun.');
 
     const p = parseSaw(sawCode);
@@ -1360,9 +1368,9 @@ function _doCalculate() {
 
     if (listeSonuc) {
         const satisFiyat  = listeSonuc.eur * (1 - iskonto / 100);
-        const karEurListe = satisFiyat - toplam;
-        const karPctListe = satisFiyat > 0 ? (karEurListe / satisFiyat) * 100 : 0;
-        const karRenk     = karEurListe >= 0 ? '#16a34a' : '#dc2626';
+        const karHammadde = satisFiyat - degiskenToplam;
+        const karPctHam   = satisFiyat > 0 ? (karHammadde / satisFiyat) * 100 : 0;
+        const karRenk     = karHammadde >= 0 ? '#16a34a' : '#dc2626';
         listeSec.innerHTML = `
         <div class="liste-found">
             <span class="liste-kod-badge">${listeSonuc.kod} &nbsp;·&nbsp; Ø${listeSonuc.D}×${listeSonuc.B}×${listeSonuc.d.join('/')}×${listeSonuc.Z}</span>
@@ -1376,12 +1384,12 @@ function _doCalculate() {
                     <div class="liste-val">${satisFiyat.toFixed(2)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
-                    <div class="liste-lbl">Toplam Maliyet</div>
-                    <div class="liste-val">${toplam.toFixed(2)}<span class="lc"> €</span></div>
+                    <div class="liste-lbl">Hammadde Maliyeti</div>
+                    <div class="liste-val">${degiskenToplam.toFixed(2)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
-                    <div class="liste-lbl">Net Kar</div>
-                    <div class="liste-val" style="color:${karRenk}">${karEurListe >= 0 ? '+' : ''}${karEurListe.toFixed(2)}<span class="lc"> €</span><br><span style="font-size:12px;font-weight:600">%${karPctListe.toFixed(1)}</span></div>
+                    <div class="liste-lbl">Üretim Karı</div>
+                    <div class="liste-val" style="color:${karRenk}">${karHammadde >= 0 ? '+' : ''}${karHammadde.toFixed(2)}<span class="lc"> €</span><br><span style="font-size:12px;font-weight:600">%${karPctHam.toFixed(1)}</span></div>
                 </div>
             </div>
         </div>`;
