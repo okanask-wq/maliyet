@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arrow-maliyet-v1';
+const CACHE_NAME = 'arrow-maliyet-v2';
 const URLS = [
   '/maliyet/maliyet.html',
   '/maliyet/manifest.json',
@@ -6,7 +6,7 @@ const URLS = [
   '/maliyet/icon-512.png',
 ];
 
-// Kurulum: tüm dosyaları önbelleğe al
+// Kurulum: dosyaları önbelleğe al
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(URLS))
@@ -24,19 +24,21 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// İstek: önce önbellekten, yoksa ağdan
+// Strateji: önce ağdan çek (her zaman güncel), internet yoksa önbellekten
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        // Başarılı yanıtları önbelleğe ekle
+    fetch(event.request)
+      .then(response => {
+        // Başarılı yanıtı önbelleğe de yaz (offline için)
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => cached); // Ağ yoksa önbellekten dön
-    })
+      })
+      .catch(() => {
+        // İnternet yoksa önbellekten dön
+        return caches.match(event.request);
+      })
   );
 });
