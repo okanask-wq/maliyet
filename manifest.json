@@ -1,0 +1,26 @@
+{
+  "name": "Arrow Maliyet Hesaplama",
+  "short_name": "Arrow Maliyet",
+  "description": "Elmas Uçlu Daire Testere Üretim Maliyeti Hesaplama",
+  "start_url": "/maliyet/maliyet.html",
+  "scope": "/maliyet/",
+  "display": "standalone",
+  "background_color": "#0f2137",
+  "theme_color": "#0f2137",
+  "orientation": "portrait-primary",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
