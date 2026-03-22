@@ -572,10 +572,10 @@
                 </div>
             </div>
 
-            <!-- Total -->
+            <!-- Total (değişken maliyetler) -->
             <div class="total-bar">
                 <div>
-                    <div class="total-label">Toplam Üretim Maliyeti</div>
+                    <div class="total-label">Değişken Maliyet Toplamı</div>
                     <div class="total-sub" id="rRateInfo">—</div>
                 </div>
                 <div class="total-val"><span id="rTotal">—</span><span class="cur">€</span></div>
@@ -603,6 +603,9 @@
             <!-- List price section -->
             <div class="card-title">📋 Liste Fiyatı & Satış Fiyatı</div>
             <div id="listeSec"></div>
+
+            <!-- Net Kar Özeti (sayfanın sonu) -->
+            <div id="netKarOzet" style="display:none;margin-top:18px"></div>
 
         </div>
     </div>
@@ -646,6 +649,19 @@
             <button class="btn-pw-change" onclick="changePassword()">Değiştir</button>
           </div>
           <div id="pwChangeMsg" style="font-size:12px;margin-top:6px;display:none"></div>
+        </div>
+
+        <!-- Sabit Giderler -->
+        <div class="settings-section">
+          <h3>🏭 Aylık Sabit Giderler (₺/ay)</h3>
+          <div id="sabitRows"></div>
+          <div class="price-row" style="margin-top:4px;border-top:1px solid var(--border);padding-top:10px">
+            <div class="price-row-label">Aylık Çalışma Saati<span>9sa × 22gün = 198 varsayılan</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input class="price-input" id="sCalisma" type="number" step="1" min="1" value="198" style="width:80px">
+              <span style="font-size:12px;color:var(--muted)">sa/ay</span>
+            </div>
+          </div>
         </div>
 
         <!-- Kutu maliyeti -->
@@ -778,6 +794,16 @@ const GOVDE_DEGISKEN_IDX = GOVDE.map((_, i) => i);
 const KUTU_VARSAYILAN = 1.5;
 let KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
 
+const SABIT_KATEGORILER = [
+    { id: 'kira',          label: 'Kira',                    icon: '🏠' },
+    { id: 'maas',          label: 'Eleman Maaşları',          icon: '👷' },
+    { id: 'elektrik',      label: 'Elektrik',                icon: '⚡' },
+    { id: 'ongorulemeyen', label: 'Öngörülemeyen Giderler',  icon: '⚠️' },
+    { id: 'diger',         label: 'Diğer',                   icon: '📌' },
+];
+let SABIT_GIDERLER = { kira: 0, maas: 0, elektrik: 0, ongorulemeyen: 0, diger: 0 };
+let AYLIK_CALISMA_SAATI = 198; // 9 saat × 22 gün (varsayılan)
+
 // diş sayısı → {saatte, sure(dk)}
 const URETIM = {
     120: {saatte: 1.62,  sure: 37},
@@ -789,6 +815,28 @@ const URETIM = {
     40:  {saatte: 5.45,  sure: 11},
     28:  {saatte: 5.0,   sure: null},
 };
+
+// Tabloda olmayan diş sayıları için interpolasyon
+function findUretim(ds) {
+    if (URETIM[ds]) {
+        const r = URETIM[ds];
+        return { saatte: r.saatte, sure: r.sure !== null ? r.sure : Math.round(60 / r.saatte), interp: false };
+    }
+    const sorted = Object.keys(URETIM).map(Number).sort((a, b) => a - b);
+    const below  = [...sorted].reverse().find(z => z < ds);
+    const above  = sorted.find(z => z > ds);
+
+    let saatte;
+    if (!below && !above) return null;
+    if (!below)  saatte = URETIM[above].saatte;
+    else if (!above) saatte = URETIM[below].saatte;
+    else {
+        const ratio = (ds - below) / (above - below);
+        saatte = URETIM[below].saatte + (URETIM[above].saatte - URETIM[below].saatte) * ratio;
+    }
+    const sure = Math.round(60 / saatte);
+    return { saatte: parseFloat(saatte.toFixed(2)), sure, interp: true, zBelow: below, zAbove: above };
+}
 
 // ═══════════════════════════════════════════════
 //  LİSTE FİYATLARI  (D=çap, B=finish genişlik, d=göbek, Z=diş sayısı)
@@ -1235,10 +1283,18 @@ function _doCalculate() {
     const telMaliyet   = telTRY * RATES.tryEur;                            // TRY→EUR
 
     const KUTU_MALIYET = KUTU_MALIYET_AYAR;                                 // EUR (ayarlanabilir)
-    const toplam = govdeMaliyet + disMaliyet + telMaliyet + KUTU_MALIYET;
 
     // ── Üretim bilgisi ──
-    const uretim = URETIM[ds];
+    const uretim = findUretim(ds);
+
+    // ── Sabit Gider Payı ──
+    const sabitToplamTRY = Object.values(SABIT_GIDERLER).reduce((s, v) => s + (v || 0), 0);
+    const sabitPayEUR = (sabitToplamTRY > 0 && uretim && RATES.tryEur > 0)
+        ? (sabitToplamTRY / AYLIK_CALISMA_SAATI) * (uretim.sure / 60) * RATES.tryEur
+        : 0;
+
+    const degiskenToplam = govdeMaliyet + disMaliyet + telMaliyet + KUTU_MALIYET;
+    const toplam = degiskenToplam + sabitPayEUR;
 
     // ── DOM güncelle ──
     set('rType',     tip);
@@ -1273,15 +1329,15 @@ function _doCalculate() {
     set('rWireDet',  `${dis.tel}mm/diş × ${ds} diş = ${telToplamMM}mm (~${telGram.toFixed(2)}g)`);
     set('rWireCost', fmt(telMaliyet));
 
-    set('rTotal',    fmt(toplam));
+    set('rTotal',    fmt(degiskenToplam));
     set('rRateInfo', `USD/EUR: ${RATES.usdEur.toFixed(4)} | TRY/EUR: ${RATES.tryEur.toFixed(5)}`);
 
     if (uretim) {
-        set('rHourly',   uretim.saatte.toFixed(2));
-        set('rDuration', uretim.sure !== null ? uretim.sure + ' dk' : '—');
-        // Günlük üretim: 09:00-18:00 = 9 saat, aşağı yuvarla
+        const sureLabel = uretim.sure + (uretim.interp ? ' dk ~' : ' dk');
+        set('rHourly',   uretim.saatte.toFixed(2) + (uretim.interp ? ' ~' : ''));
+        set('rDuration', sureLabel);
         const gunluk = Math.floor(uretim.saatte * 9);
-        set('rDaily', gunluk + ' adet');
+        set('rDaily', gunluk + ' adet' + (uretim.interp ? ' ~' : ''));
     } else {
         set('rHourly', '—'); set('rDuration', '—'); set('rDaily', '—');
     }
@@ -1293,10 +1349,7 @@ function _doCalculate() {
 
     if (listeSonuc) {
         const satisFiyat = listeSonuc.eur * (1 - iskonto / 100);
-        const karEur     = satisFiyat - toplam;
-        const karPct     = satisFiyat > 0 ? (karEur / satisFiyat) * 100 : 0;
         const satisTry   = RATES.tryEur > 0 ? satisFiyat / RATES.tryEur : 0;
-        const karTry = RATES.tryEur > 0 ? karEur / RATES.tryEur : 0;
         listeSec.innerHTML = `
         <div class="liste-found">
             <span class="liste-kod-badge">${listeSonuc.kod} &nbsp;·&nbsp; Ø${listeSonuc.D}×${listeSonuc.B}×${listeSonuc.d.join('/')}×${listeSonuc.Z}</span>
@@ -1314,25 +1367,8 @@ function _doCalculate() {
                     <div class="liste-val">${Math.round(satisTry).toLocaleString('tr-TR')}<span class="lc"> ₺</span></div>
                 </div>
                 <div class="liste-item">
-                    <div class="liste-lbl">Kar Marjı</div>
-                    <div class="liste-val ${karPct >= 0 ? 'green' : 'red'}">${karPct.toFixed(1)}<span class="lc">%</span></div>
-                </div>
-            </div>
-            <!-- Kar özeti -->
-            <div style="margin-top:12px;padding:14px 16px;border-radius:10px;background:${karEur>=0?'linear-gradient(135deg,#f0fdf4,#dcfce7)':'linear-gradient(135deg,#fef2f2,#fee2e2)'};border:1px solid ${karEur>=0?'#86efac':'#fca5a5'}">
-                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Üretim Karı (Satış − Maliyet)</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-                    <div style="font-size:13px;color:var(--muted)">
-                        ${satisFiyat.toFixed(2)} € − ${toplam.toFixed(3)} € =
-                    </div>
-                    <div style="display:flex;gap:16px;align-items:center">
-                        <div style="font-size:22px;font-weight:800;color:${karEur>=0?'#16a34a':'#dc2626'}">
-                            ${karEur>=0?'+':''}${karEur.toFixed(2)} €
-                        </div>
-                        <div style="font-size:18px;font-weight:700;color:${karEur>=0?'#15803d':'#b91c1c'}">
-                            ${karEur>=0?'+':''}${Math.round(karTry).toLocaleString('tr-TR')} ₺
-                        </div>
-                    </div>
+                    <div class="liste-lbl">İskonto</div>
+                    <div class="liste-val">${iskonto > 0 ? '%'+iskonto : '—'}</div>
                 </div>
             </div>
         </div>`;
@@ -1378,6 +1414,77 @@ function _doCalculate() {
             Bu ürün için katalogda birebir liste fiyatı bulunamadı.<br>
             <small>${tip} tipi • Ø${cap}mm • B${fg}mm • d${p.gobek} • Z${ds}</small>
         </div>${benzerHTML}`;
+    }
+
+    // ── Net Kar Özeti ──
+    const netKarOzet = document.getElementById('netKarOzet');
+    const satisFiyatOzet = listeSonuc ? listeSonuc.eur * (1 - iskonto / 100) : null;
+
+    if (satisFiyatOzet !== null || sabitPayEUR > 0) {
+        const karDegisken    = satisFiyatOzet !== null ? satisFiyatOzet - degiskenToplam : null;
+        const karNet         = satisFiyatOzet !== null ? satisFiyatOzet - toplam : null;
+        const marjDegisken   = (karDegisken !== null && satisFiyatOzet > 0) ? (karDegisken / satisFiyatOzet) * 100 : null;
+        const marjNet        = (karNet !== null && satisFiyatOzet > 0) ? (karNet / satisFiyatOzet) * 100 : null;
+        const karNetTRY      = (karNet !== null && RATES.tryEur > 0) ? karNet / RATES.tryEur : null;
+        const karDegTRY      = (karDegisken !== null && RATES.tryEur > 0) ? karDegisken / RATES.tryEur : null;
+
+        // Sabit gider detay satırları
+        const sabitDetay = sabitPayEUR > 0 ? SABIT_KATEGORILER.map(k => {
+            const tryVal = SABIT_GIDERLER[k.id] || 0;
+            if (!tryVal) return '';
+            const payEUR = (tryVal / AYLIK_CALISMA_SAATI) * (uretim ? uretim.sure / 60 : 0) * RATES.tryEur;
+            return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">${k.icon} ${k.label}</span>
+                <span>${Math.round(tryVal).toLocaleString('tr-TR')} ₺/ay → <b>${payEUR.toFixed(3)} €</b></span>
+            </div>`;
+        }).filter(Boolean).join('') : '';
+
+        const karBlock = (karVal, marjVal, karTRY, label, accent) => karVal !== null ? `
+            <div style="flex:1;min-width:140px;background:${karVal>=0?'linear-gradient(135deg,#f0fdf4,#dcfce7)':'linear-gradient(135deg,#fef2f2,#fee2e2)'};border:1px solid ${karVal>=0?'#86efac':'#fca5a5'};border-radius:12px;padding:14px 16px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">${label}</div>
+                <div style="font-size:26px;font-weight:800;color:${karVal>=0?'#16a34a':'#dc2626'}">${karVal>=0?'+':''}${karVal.toFixed(2)} €</div>
+                <div style="font-size:16px;font-weight:600;color:${karVal>=0?'#15803d':'#b91c1c'};margin-top:2px">${karVal>=0?'+':''}${Math.round(karTRY).toLocaleString('tr-TR')} ₺</div>
+                <div style="margin-top:8px;font-size:13px;color:${karVal>=0?'#166534':'#991b1b'}">Marj: <b>${marjVal.toFixed(1)}%</b></div>
+            </div>` : '';
+
+        netKarOzet.innerHTML = `
+        <div style="border-top:2px solid var(--border2);padding-top:18px">
+            <div class="card-title" style="margin-bottom:14px">📊 Maliyet & Kar Özeti</div>
+
+            <!-- Maliyet özet tablosu -->
+            <div style="background:#f8fafc;border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">
+                    <span style="color:var(--muted)">🔩 Değişken Maliyet (Gövde + Diş + Tel + Kutu)</span>
+                    <span style="font-weight:700">${degiskenToplam.toFixed(3)} €</span>
+                </div>
+                ${sabitPayEUR > 0 ? `
+                <div style="padding:6px 0 2px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">🏭 Sabit Gider Payı (${uretim ? uretim.sure+'dk' : '—'} / ${AYLIK_CALISMA_SAATI}sa/ay)</div>
+                ${sabitDetay}
+                <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px">
+                    <span style="color:var(--muted)">Sabit Gider Payı Toplamı</span>
+                    <span style="font-weight:700;color:#d97706">${sabitPayEUR.toFixed(3)} €</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0 2px;font-size:15px;font-weight:800;border-top:2px solid var(--border2);margin-top:4px">
+                    <span>Toplam Maliyet</span>
+                    <span>${toplam.toFixed(3)} €</span>
+                </div>` : ''}
+                ${satisFiyatOzet !== null ? `
+                <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px;color:#2563eb">
+                    <span>💰 Satış Fiyatı${iskonto>0?' (-%'+iskonto+')':''}</span>
+                    <span style="font-weight:700">${satisFiyatOzet.toFixed(2)} €</span>
+                </div>` : ''}
+            </div>
+
+            <!-- Kar kutuları -->
+            ${satisFiyatOzet !== null ? `
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                ${karBlock(karDegisken, marjDegisken, karDegTRY, sabitPayEUR>0?'Üretim Karı (Sabit Hariç)':'Üretim Karı', '#16a34a')}
+                ${sabitPayEUR > 0 ? karBlock(karNet, marjNet, karNetTRY, 'Net Kar (Sabit Dahil)', '#0f766e') : ''}
+            </div>` : '<div style="font-size:13px;color:var(--muted);text-align:center;padding:10px">Kar hesabı için liste fiyatı eşleşmesi gerekiyor.</div>'}
+        </div>`;
+        netKarOzet.style.display = 'block';
+    } else {
+        netKarOzet.style.display = 'none';
     }
 
     document.getElementById('results').style.display = 'block';
@@ -1432,6 +1539,8 @@ function loadSavedPrices() {
             });
         }
         if (data.kutu > 0) KUTU_MALIYET_AYAR = data.kutu;
+        if (data.sabit) Object.keys(SABIT_GIDERLER).forEach(k => { if (data.sabit[k] !== undefined) SABIT_GIDERLER[k] = data.sabit[k]; });
+        if (data.calisma > 0) AYLIK_CALISMA_SAATI = data.calisma;
     } catch(e) {}
 }
 
@@ -1465,6 +1574,19 @@ function checkPassword() {
 }
 
 function buildSettingsPanel() {
+    // Sabit giderler
+    const sabitContainer = document.getElementById('sabitRows');
+    sabitContainer.innerHTML = SABIT_KATEGORILER.map(k => `
+        <div class="price-row">
+            <div class="price-row-label">${k.icon} ${k.label}<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_${k.id}" type="number" step="100" min="0"
+                    value="${SABIT_GIDERLER[k.id] || 0}" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div>`).join('');
+    document.getElementById('sCalisma').value = AYLIK_CALISMA_SAATI;
+
     // Kutu
     document.getElementById('sKutu').value = KUTU_MALIYET_AYAR;
 
@@ -1497,6 +1619,14 @@ function buildSettingsPanel() {
 }
 
 function savePrices() {
+    // Sabit giderler
+    SABIT_KATEGORILER.forEach(k => {
+        const v = parseFloat(document.getElementById('sSabit_' + k.id).value);
+        SABIT_GIDERLER[k.id] = isNaN(v) ? 0 : v;
+    });
+    const calisma = parseInt(document.getElementById('sCalisma').value);
+    if (calisma > 0) AYLIK_CALISMA_SAATI = calisma;
+
     const kutu = parseFloat(document.getElementById('sKutu').value);
     if (kutu > 0) KUTU_MALIYET_AYAR = kutu;
 
@@ -1520,6 +1650,8 @@ function savePrices() {
         dis: disKgFiyatlar,
         govde: govdeFiyatlar,
         kutu: KUTU_MALIYET_AYAR,
+        sabit: SABIT_GIDERLER,
+        calisma: AYLIK_CALISMA_SAATI,
     }));
 
     const ok = document.getElementById('saveOk');
@@ -1532,6 +1664,8 @@ function resetPrices() {
     localStorage.removeItem(LS_KEY);
     DIS_VARSAYILAN.forEach((d, i) => { DIS[i].kgUSD = d.kgUSD; DIS[i].fUSD = disFiyatHesapla(d); });
     KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
+    SABIT_KATEGORILER.forEach(k => { SABIT_GIDERLER[k.id] = 0; });
+    AYLIK_CALISMA_SAATI = 198;
     buildSettingsPanel();
     alert('Fiyatlar sıfırlandı.');
 }
