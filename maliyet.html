@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Elmas Uçlu Daire Testere — Maliyet Hesaplama</title>
+    <title>Arrow — Maliyet Hesaplama</title>
     <style>
         :root {
             --primary: #0f2137;
@@ -222,6 +222,39 @@
         .liste-val.red   { color:#dc2626; }
         .liste-notfound { background:#f8fafc; border:1px dashed var(--border2); border-radius:12px; padding:14px; text-align:center; color:var(--muted); font-size:13px; }
 
+        /* ── GİRİŞ EKRANI ── */
+        #loginOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #0f2137 0%, #1a3a5c 100%);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+        }
+        .login-box {
+            background: white; border-radius: 20px; padding: 40px 36px;
+            width: 100%; max-width: 380px; text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .login-logo { font-size: 42px; margin-bottom: 14px; }
+        .login-title { font-size: 19px; font-weight: 700; color: #0f2137; margin-bottom: 5px; }
+        .login-sub { font-size: 13px; color: #64748b; margin-bottom: 28px; line-height: 1.5; }
+        .login-input {
+            width: 100%; padding: 13px 16px; font-size: 22px; letter-spacing: 6px;
+            border: 2px solid #e2e8f0; border-radius: 10px; outline: none;
+            text-align: center; font-family: inherit; margin-bottom: 14px;
+            transition: border 0.2s; color: #0f2137;
+        }
+        .login-input:focus { border-color: #2563eb; }
+        .login-btn {
+            width: 100%; padding: 13px; background: #2563eb; color: white;
+            border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: background 0.2s; font-family: inherit;
+            touch-action: manipulation;
+        }
+        .login-btn:hover { background: #1d4ed8; }
+        .login-btn:active { background: #1e40af; }
+        .login-err { color: #dc2626; font-size: 13px; margin-top: 12px; display: none; font-weight: 500; }
+        .login-footer { font-size: 11px; color: #94a3b8; margin-top: 20px; }
+
         @media (max-width: 680px) {
             /* ── Header ── */
             header { flex-direction: column; gap: 10px; padding: 12px 14px; }
@@ -262,16 +295,143 @@
             .liste-val  { font-size: 16px; }
             .liste-lbl  { font-size: 9px; }
         }
+
+        /* ── AYARLAR MODAL ── */
+        .settings-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.6);
+            border-radius: 8px;
+            width: 32px; height: 32px;
+            cursor: pointer; font-size: 15px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0;
+        }
+        .settings-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55); z-index: 999;
+            align-items: center; justify-content: center; padding: 16px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white; border-radius: 18px;
+            width: 100%; max-width: 560px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-head {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 20px 24px;
+            border-radius: 18px 18px 0 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-head h2 { font-size: 16px; font-weight: 700; }
+        .modal-head p  { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+        .modal-close {
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            border-radius: 8px; width: 32px; height: 32px;
+            cursor: pointer; font-size: 18px; line-height: 1;
+        }
+        .modal-body { padding: 22px 24px; }
+
+        .pw-box { display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 16px 0; }
+        .pw-box input {
+            border: 2px solid var(--border); border-radius: 10px;
+            padding: 11px 16px; font-size: 18px; text-align: center;
+            letter-spacing: 6px; width: 200px; outline: none;
+        }
+        .pw-box input:focus { border-color: var(--accent); }
+        .pw-error { color: var(--danger); font-size: 13px; display: none; }
+
+        .settings-section { margin-bottom: 20px; }
+        .settings-section h3 {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--muted); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .price-row {
+            display: grid; grid-template-columns: 1fr auto;
+            align-items: center; gap: 10px;
+            padding: 8px 12px; background: #f8fafc;
+            border-radius: 8px; border: 1px solid var(--border);
+            margin-bottom: 6px;
+        }
+        .price-row-label { font-size: 12px; color: var(--text); }
+        .price-row-label span { display: block; font-size: 10px; color: var(--muted); margin-top: 1px; }
+        .price-input {
+            border: 1.5px solid var(--border); border-radius: 7px;
+            padding: 6px 10px; font-size: 14px; font-weight: 600;
+            width: 110px; text-align: right; outline: none;
+        }
+        .price-input:focus { border-color: var(--accent); }
+
+        .settings-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-save-settings {
+            flex: 1; background: linear-gradient(135deg,#059669,#10b981);
+            color: white; border: none; border-radius: 10px;
+            padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+        .btn-reset-settings {
+            background: #f1f5f9; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 10px; padding: 13px 16px; font-size: 13px; cursor: pointer;
+        }
+        .save-ok { color: var(--success); font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+
+        .pw-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .pw-change-row { display: flex; gap: 8px; align-items: center; }
+        .pw-change-row input {
+            border: 1.5px solid var(--border); border-radius: 8px;
+            padding: 8px 12px; font-size: 14px; flex: 1; outline: none;
+        }
+        .pw-change-row input:focus { border-color: var(--accent); }
+        .btn-pw-change {
+            background: var(--accent); color: white; border: none;
+            border-radius: 8px; padding: 8px 14px; font-size: 13px; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
+<!-- ── GİRİŞ EKRANI ── -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <div class="login-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" width="200" height="82">
+                <text x="160" y="62" font-family="Arial Black,Impact,sans-serif" font-size="60" font-weight="900" text-anchor="middle" fill="#0f2137" letter-spacing="-1">ARROW</text>
+                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"/>
+                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"/>
+                <polygon points="296,76 312,82 296,88" fill="#0f2137"/>
+                <text x="160" y="112" font-family="Arial,sans-serif" font-size="17" text-anchor="middle" fill="#0f2137" font-weight="600" letter-spacing="3">SEGA CIRCOLARE</text>
+            </svg>
+        </div>
+        <div class="login-title">Maliyet Hesaplama</div>
+        <div class="login-sub">Sisteme Hoş Geldiniz<br>Devam etmek için şifrenizi girin</div>
+        <input type="password" id="loginInput" class="login-input" placeholder="••••" maxlength="20"
+               onkeydown="if(event.key==='Enter') checkLogin()">
+        <button class="login-btn" type="button" onclick="checkLogin()" ontouchend="event.preventDefault();checkLogin()">
+            Giriş Yap
+        </button>
+        <div class="login-err" id="loginErr">Hatalı şifre, tekrar deneyin.</div>
+        <div class="login-footer">Yetkisiz erişime kapalıdır.</div>
+    </div>
+</div>
+
 <header>
     <div class="header-left">
-        <div class="header-icon">⚙️</div>
+        <div class="header-icon" style="background:white;border-color:rgba(255,255,255,0.4);padding:4px;width:54px;height:54px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" width="46" height="46">
+                <text x="160" y="62" font-family="Arial Black,Impact,sans-serif" font-size="60" font-weight="900" text-anchor="middle" fill="#0f2137" letter-spacing="-1">ARROW</text>
+                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"/>
+                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"/>
+                <polygon points="296,76 312,82 296,88" fill="#0f2137"/>
+                <text x="160" y="112" font-family="Arial,sans-serif" font-size="17" text-anchor="middle" fill="#0f2137" font-weight="600" letter-spacing="3">SEGA CIRCOLARE</text>
+            </svg>
+        </div>
         <div>
-            <h1>Elmas Uçlu Daire Testere</h1>
-            <p>Üretim Maliyeti Hesaplama Sistemi</p>
+            <h1>Arrow Maliyet Hesaplama</h1>
+            <p>Elmas Uçlu Daire Testere — Üretim Maliyeti</p>
         </div>
     </div>
     <div class="header-right">
@@ -296,6 +456,7 @@
             </div>
         </div>
         <button class="refresh-btn" id="refreshBtn" onclick="fetchRates()" title="Kurları Güncelle">↻</button>
+        <button class="settings-btn" onclick="openSettings()" title="Fiyat Güncelleme">🔒</button>
     </div>
 </header>
 
@@ -378,6 +539,7 @@
                     </div>
                     <div class="cost-eur"><span id="rBodyCost">—</span><span class="cur">EUR</span></div>
                 </div>
+                <div id="govdeUyari" style="display:none;background:#fef9ec;border:1px solid #fbbf24;border-radius:8px;padding:9px 13px;font-size:12px;color:#92400e;margin-top:-6px;margin-bottom:4px;line-height:1.5;"></div>
                 <div class="cost-item">
                     <div class="cost-item-left">
                         <div class="cost-icon ic-green">💎</div>
@@ -421,7 +583,7 @@
 
             <!-- Production -->
             <div class="card-title">⏱️ Üretim Bilgisi</div>
-            <div class="prod-grid">
+            <div class="prod-grid" style="grid-template-columns:repeat(3,1fr)">
                 <div class="prod-card">
                     <div class="prod-val" id="rHourly">—</div>
                     <div class="prod-lbl">Saatte Üretilen (adet)</div>
@@ -429,6 +591,10 @@
                 <div class="prod-card">
                     <div class="prod-val" id="rDuration">—</div>
                     <div class="prod-lbl">Üretim Süresi (dakika)</div>
+                </div>
+                <div class="prod-card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe">
+                    <div class="prod-val" id="rDaily" style="color:var(--accent)">—</div>
+                    <div class="prod-lbl">Günlük Üretim (09-18)</div>
                 </div>
             </div>
 
@@ -441,6 +607,80 @@
         </div>
     </div>
 
+</div>
+
+<!-- ── AYARLAR MODAL ── -->
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>🔒 Fiyat Güncelleme Paneli</h2>
+        <p>Hammadde fiyatlarını buradan güncelleyin</p>
+      </div>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Şifre ekranı -->
+      <div id="pwScreen">
+        <div class="pw-box">
+          <div style="font-size:13px;color:var(--muted);text-align:center;">Fiyatları güncellemek için şifrenizi girin</div>
+          <input type="password" id="pwInput" placeholder="••••" maxlength="20"
+            onkeydown="if(event.key==='Enter')checkPassword()">
+          <button class="btn-save-settings" style="width:160px" onclick="checkPassword()">Giriş</button>
+          <div class="pw-error" id="pwError">Hatalı şifre, tekrar deneyin.</div>
+        </div>
+      </div>
+
+      <!-- Ayarlar paneli (şifre doğruysa açılır) -->
+      <div id="settingsPanel" style="display:none">
+
+        <!-- Şifre değiştir -->
+        <div class="pw-section">
+          <div class="settings-section" style="margin-bottom:10px">
+            <h3>🔑 Şifre Değiştir</h3>
+          </div>
+          <div class="pw-change-row">
+            <input type="password" id="newPw1" placeholder="Yeni şifre">
+            <input type="password" id="newPw2" placeholder="Tekrar">
+            <button class="btn-pw-change" onclick="changePassword()">Değiştir</button>
+          </div>
+          <div id="pwChangeMsg" style="font-size:12px;margin-top:6px;display:none"></div>
+        </div>
+
+        <!-- Kutu maliyeti -->
+        <div class="settings-section">
+          <h3>📦 Kutu Maliyeti</h3>
+          <div class="price-row">
+            <div class="price-row-label">Ambalaj kutu<span>Sabit maliyet</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input class="price-input" id="sKutu" type="number" step="0.01" min="0">
+              <span style="font-size:12px;color:var(--muted)">EUR</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diş fiyatları -->
+        <div class="settings-section">
+          <h3>💎 Diş Fiyatları (USD / adet)</h3>
+          <div id="disRows"></div>
+        </div>
+
+        <!-- Gövde fiyatları (sık değişenler) -->
+        <div class="settings-section">
+          <h3>🔵 Sık Değişen Gövde Fiyatları (EUR)</h3>
+          <div id="govdeRows"></div>
+        </div>
+
+        <div class="settings-actions">
+          <button class="btn-reset-settings" onclick="resetPrices()">↺ Sıfırla</button>
+          <button class="btn-save-settings" onclick="savePrices()">✓ Kaydet</button>
+        </div>
+        <div class="save-ok" id="saveOk">✅ Fiyatlar kaydedildi!</div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <script>
@@ -513,21 +753,30 @@ const GOVDE = [
     {cap:900, k:4.5,  f:102.5946677},
 ];
 
-// uzunluk, genislik, marka, fiyatUSD (adet), telMM
-const DIS = [
-    {u:8.0,  g:3.4, marka:'Ceratizit', fUSD:0.1458333333, tel:15},
-    {u:8.0,  g:4.2, marka:'Ceratizit', fUSD:0.175,        tel:19},
-    {u:8.0,  g:4.8, marka:'Ceratizit', fUSD:0.21875,      tel:20},
-    {u:8.5,  g:5.6, marka:'Jg03',      fUSD:0.2822580645, tel:21},
-    {u:8.5,  g:6.2, marka:'Jg03',      fUSD:0.2951096121, tel:22},
-    {u:8.5,  g:6.4, marka:'Jg03',      fUSD:0.3181818182, tel:22},
-    {u:10.5, g:3.5, marka:'Ceratizit', fUSD:0.2611940299, tel:17},
-    {u:10.5, g:4.2, marka:'Ceratizit', fUSD:0.3645833333, tel:19},
-    {u:10.5, g:4.4, marka:'Ceratizit', fUSD:0.3804347826, tel:22},
-    {u:10.5, g:4.8, marka:'Ceratizit', fUSD:0.3571428571, tel:24},
-    {u:10.5, g:5.3, marka:'Ceratizit', fUSD:0.5494505495, tel:25},
-    {u:10.5, g:6.4, marka:'Ceratizit', fUSD:0.8152173913, tel:26},
+// uzunluk, genislik, marka, tel(mm/adet), gr(gram/adet - Excel'den sabit), kgUSD(kg fiyatı)
+// fUSD = kgUSD / 1000 * gr  →  sistem hesaplar
+const DIS_VARSAYILAN = [
+    {u:8.0,  g:3.4, marka:'Ceratizit', tel:15, gr:0.833, kgUSD:175},
+    {u:8.0,  g:4.2, marka:'Ceratizit', tel:19, gr:1.000, kgUSD:175},
+    {u:8.0,  g:4.8, marka:'Ceratizit', tel:20, gr:1.250, kgUSD:175},
+    {u:8.5,  g:5.6, marka:'Jg03',      tel:21, gr:1.613, kgUSD:175},
+    {u:8.5,  g:6.2, marka:'Jg03',      tel:22, gr:1.687, kgUSD:175},
+    {u:8.5,  g:6.4, marka:'Jg03',      tel:22, gr:1.818, kgUSD:175},
+    {u:10.5, g:3.5, marka:'Ceratizit', tel:17, gr:1.493, kgUSD:175},
+    {u:10.5, g:4.2, marka:'Ceratizit', tel:19, gr:2.083, kgUSD:175},
+    {u:10.5, g:4.4, marka:'Ceratizit', tel:22, gr:2.174, kgUSD:175},
+    {u:10.5, g:4.8, marka:'Ceratizit', tel:24, gr:2.041, kgUSD:175},
+    {u:10.5, g:5.3, marka:'Ceratizit', tel:25, gr:1.832, kgUSD:300},
+    {u:10.5, g:6.4, marka:'Ceratizit', tel:26, gr:2.717, kgUSD:300},
 ];
+// fUSD adet fiyatını kgUSD ve gramajdan hesapla
+function disFiyatHesapla(d) { return d.kgUSD / 1000 * d.gr; }
+let DIS = DIS_VARSAYILAN.map(d => ({...d, fUSD: disFiyatHesapla(d)}));
+
+// Tüm gövde indisleri ayarlar panelinde gösterilir
+const GOVDE_DEGISKEN_IDX = GOVDE.map((_, i) => i);
+const KUTU_VARSAYILAN = 1.5;
+let KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
 
 // diş sayısı → {saatte, sure(dk)}
 const URETIM = {
@@ -716,12 +965,36 @@ const LISTE_FIYAT = {
 function findListeFiyat(tip, D, B, d, Z) {
     const tablo = LISTE_FIYAT[tip];
     if (!tablo) return null;
+    // Göbek (d) opsiyonel — çap, kalınlık ve diş sayısı öncelikli
     return tablo.find(r =>
         r.D === D &&
         Math.abs(r.B - B) < 0.05 &&
-        r.d.includes(d) &&
+        r.Z === Z
+    ) || tablo.find(r =>
+        r.D === D &&
         r.Z === Z
     ) || null;
+}
+
+function findBenzerListeFiyat(tip, D, Z) {
+    const tablo = LISTE_FIYAT[tip];
+    if (!tablo || tablo.length === 0) return [];
+    // Skor: çap farkı daha ağırlıklı, diş sayısı ikincil
+    const scored = tablo.map(r => ({
+        ...r,
+        _score: Math.abs(r.D - D) * 3 + Math.abs(r.Z - Z) * 0.5
+    })).sort((a, b) => a._score - b._score);
+
+    // Bir alt çap (D <= istenen) ve bir üst çap (D >= istenen) bul
+    const alt = scored.filter(r => r.D <= D).slice(0, 1);
+    const ust = scored.filter(r => r.D >= D).slice(0, 1);
+    const combined = [...alt];
+    ust.forEach(r => { if (!combined.find(c => c.kod === r.kod)) combined.push(r); });
+    // Gerekirse 3. en yakını ekle
+    scored.forEach(r => {
+        if (combined.length < 3 && !combined.find(c => c.kod === r.kod)) combined.push(r);
+    });
+    return combined;
 }
 
 const TOLERANS = { AP:0.8, HW:1.0, RP:1.2, MRP:1.2, TCG:1.0 };
@@ -820,7 +1093,12 @@ function govdePriceForCap(targetCap, minK) {
     if (sameCap.length === 0) return null;
 
     const aboveList = sameCap.filter(g => g.k >= minK - 0.001);
-    if (aboveList.length === 0) return null;
+
+    // İstenen kalınlığı karşılayan gövde yok → en yakın (en büyük) kalınlığı kullan
+    if (aboveList.length === 0) {
+        const nearest = sameCap[sameCap.length - 1];
+        return { f: nearest.f, k: nearest.k, kInterp: false, kApprox: true, kRequested: minK };
+    }
 
     const above = aboveList[0];
 
@@ -849,7 +1127,7 @@ function findGovde(cap, minK) {
     if (allCaps.includes(cap)) {
         const r = govdePriceForCap(cap, minK);
         if (!r) return null;
-        return { cap, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kBelow: r.kBelow, kAbove: r.kAbove };
+        return { cap, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kBelow: r.kBelow, kAbove: r.kAbove, kApprox: r.kApprox, kRequested: r.kRequested };
     }
 
     // 2. Çap interpolasyonu
@@ -860,19 +1138,19 @@ function findGovde(cap, minK) {
 
     if (!cBelow) {
         const r = govdePriceForCap(cAbove, minK);
-        return r ? { cap: cAbove, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp } : null;
+        return r ? { cap: cAbove, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kApprox: r.kApprox, kRequested: r.kRequested } : null;
     }
     if (!cAbove) {
         const r = govdePriceForCap(cBelow, minK);
-        return r ? { cap: cBelow, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp } : null;
+        return r ? { cap: cBelow, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kApprox: r.kApprox, kRequested: r.kRequested } : null;
     }
 
     const rBelow = govdePriceForCap(cBelow, minK);
     const rAbove = govdePriceForCap(cAbove, minK);
 
     if (!rBelow && !rAbove) return null;
-    if (!rBelow) return { cap: cAbove, f: rAbove.f, k: rAbove.k, capInterp: false, kInterp: rAbove.kInterp };
-    if (!rAbove) return { cap: cBelow, f: rBelow.f, k: rBelow.k, capInterp: false, kInterp: rBelow.kInterp };
+    if (!rBelow) return { cap: cAbove, f: rAbove.f, k: rAbove.k, capInterp: false, kInterp: rAbove.kInterp, kApprox: rAbove.kApprox, kRequested: rAbove.kRequested };
+    if (!rAbove) return { cap: cBelow, f: rBelow.f, k: rBelow.k, capInterp: false, kInterp: rBelow.kInterp, kApprox: rBelow.kApprox, kRequested: rBelow.kRequested };
 
     // İki çap arasında lineer interpolasyon
     const capRatio = (cap - cBelow) / (cAbove - cBelow);
@@ -956,7 +1234,7 @@ function _doCalculate() {
     const telTRY       = (telToplamMM / 500000) * wirePrice;
     const telMaliyet   = telTRY * RATES.tryEur;                            // TRY→EUR
 
-    const KUTU_MALIYET = 1.5;                                               // EUR sabit
+    const KUTU_MALIYET = KUTU_MALIYET_AYAR;                                 // EUR (ayarlanabilir)
     const toplam = govdeMaliyet + disMaliyet + telMaliyet + KUTU_MALIYET;
 
     // ── Üretim bilgisi ──
@@ -967,9 +1245,12 @@ function _doCalculate() {
     set('rCode',     sawCode.trim().toUpperCase());
     set('rDesc',     `${cap}mm çap • ${ds} diş • ${TIP_ISIM[tip]}`);
 
-    // Gövde açıklaması: çap ve kalınlık interpolasyonu notları
+    // Gövde açıklaması: çap ve kalınlık interpolasyonu / yaklaşım notları
     let govdeNot = '';
-    if (govde.capInterp) {
+    let govdeUyari = '';
+    if (govde.kApprox) {
+        govdeUyari = `⚠️ İstenen kalınlık ≥${govde.kRequested.toFixed(1)}mm — katalogda bu çap için en kalın gövde ${govde.k.toFixed(1)}mm, o kullanıldı.`;
+    } else if (govde.capInterp) {
         govdeNot = ` (çap interp: Ø${govde.cBelow}mm=${fmt(govde.fBelow)}€ / Ø${govde.cAbove}mm=${fmt(govde.fAbove)}€)`;
     } else if (govde.kInterp && govde.kBelow) {
         govdeNot = ` (kalınlık interp: ${govde.kBelow.k}mm=${fmt(govde.kBelow.f)}€ / ${govde.kAbove.k}mm=${fmt(govde.kAbove.f)}€)`;
@@ -977,6 +1258,13 @@ function _doCalculate() {
         govdeNot = ` (istenen ≥${minK.toFixed(2)}mm, seçilen ${govde.k}mm)`;
     }
     set('rBodyDet',  `Ø${govde.cap}mm × ${govde.k.toFixed(2)}mm kalınlık${govdeNot}`);
+
+    // Yaklaşım uyarısı varsa göster
+    const govdeUyariEl = document.getElementById('govdeUyari');
+    if (govdeUyariEl) {
+        govdeUyariEl.textContent = govdeUyari;
+        govdeUyariEl.style.display = govdeUyari ? 'block' : 'none';
+    }
     set('rBodyCost', fmt(govdeMaliyet));
 
     set('rToothDet', `${dis.marka} • ${dis.u}×${dis.g}mm • ${ds} adet`);
@@ -991,8 +1279,11 @@ function _doCalculate() {
     if (uretim) {
         set('rHourly',   uretim.saatte.toFixed(2));
         set('rDuration', uretim.sure !== null ? uretim.sure + ' dk' : '—');
+        // Günlük üretim: 09:00-18:00 = 9 saat, aşağı yuvarla
+        const gunluk = Math.floor(uretim.saatte * 9);
+        set('rDaily', gunluk + ' adet');
     } else {
-        set('rHourly', '—'); set('rDuration', '—');
+        set('rHourly', '—'); set('rDuration', '—'); set('rDaily', '—');
     }
 
     // ── Liste Fiyatı ──
@@ -1005,17 +1296,18 @@ function _doCalculate() {
         const karEur     = satisFiyat - toplam;
         const karPct     = satisFiyat > 0 ? (karEur / satisFiyat) * 100 : 0;
         const satisTry   = RATES.tryEur > 0 ? satisFiyat / RATES.tryEur : 0;
+        const karTry = RATES.tryEur > 0 ? karEur / RATES.tryEur : 0;
         listeSec.innerHTML = `
         <div class="liste-found">
-            <span class="liste-kod-badge">${listeSonuc.kod}</span>
+            <span class="liste-kod-badge">${listeSonuc.kod} &nbsp;·&nbsp; Ø${listeSonuc.D}×${listeSonuc.B}×${listeSonuc.d.join('/')}×${listeSonuc.Z}</span>
             <div class="liste-grid">
                 <div class="liste-item">
                     <div class="liste-lbl">Liste Fiyatı</div>
                     <div class="liste-val">${listeSonuc.eur.toFixed(0)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
-                    <div class="liste-lbl">İskonto & Satış</div>
-                    <div class="liste-val">${iskonto > 0 ? '%'+iskonto+' → ' : ''}${satisFiyat.toFixed(2)}<span class="lc"> €</span></div>
+                    <div class="liste-lbl">Satış Fiyatı${iskonto > 0 ? ' (-%'+iskonto+')' : ''}</div>
+                    <div class="liste-val">${satisFiyat.toFixed(2)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
                     <div class="liste-lbl">Satış Fiyatı (₺)</div>
@@ -1026,12 +1318,66 @@ function _doCalculate() {
                     <div class="liste-val ${karPct >= 0 ? 'green' : 'red'}">${karPct.toFixed(1)}<span class="lc">%</span></div>
                 </div>
             </div>
+            <!-- Kar özeti -->
+            <div style="margin-top:12px;padding:14px 16px;border-radius:10px;background:${karEur>=0?'linear-gradient(135deg,#f0fdf4,#dcfce7)':'linear-gradient(135deg,#fef2f2,#fee2e2)'};border:1px solid ${karEur>=0?'#86efac':'#fca5a5'}">
+                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Üretim Karı (Satış − Maliyet)</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                    <div style="font-size:13px;color:var(--muted)">
+                        ${satisFiyat.toFixed(2)} € − ${toplam.toFixed(3)} € =
+                    </div>
+                    <div style="display:flex;gap:16px;align-items:center">
+                        <div style="font-size:22px;font-weight:800;color:${karEur>=0?'#16a34a':'#dc2626'}">
+                            ${karEur>=0?'+':''}${karEur.toFixed(2)} €
+                        </div>
+                        <div style="font-size:18px;font-weight:700;color:${karEur>=0?'#15803d':'#b91c1c'}">
+                            ${karEur>=0?'+':''}${Math.round(karTry).toLocaleString('tr-TR')} ₺
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>`;
     } else {
+        const benzerler = findBenzerListeFiyat(tip, cap, ds);
+        let benzerHTML = '';
+        if (benzerler.length > 0) {
+            benzerHTML = `
+            <div style="margin-top:10px">
+                <div style="font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">
+                    📋 Kataloğumuzdan Benzer Ürünler (Tavsiye Niteliğinde)
+                </div>
+                ${benzerler.map(r => {
+                    const satisFiyat = r.eur * (1 - iskonto / 100);
+                    const satisTry   = RATES.tryEur > 0 ? satisFiyat / RATES.tryEur : 0;
+                    return `
+                    <div style="background:#f8fafc;border:1px solid var(--border2);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                        <div>
+                            <span style="background:#2563eb;color:white;border-radius:5px;padding:2px 9px;font-size:11px;font-weight:700;letter-spacing:.4px">${r.kod}</span>
+                            <span style="margin-left:8px;font-size:12px;color:var(--muted)">Ø${r.D}×${r.B}×${r.d.join('/')}×${r.Z}</span>
+                        </div>
+                        <div style="display:flex;gap:14px;align-items:center">
+                            <div style="text-align:right">
+                                <div style="font-size:10px;color:var(--muted)">Liste</div>
+                                <div style="font-size:16px;font-weight:700;color:var(--text)">${r.eur.toFixed(0)} €</div>
+                            </div>
+                            ${iskonto > 0 ? `
+                            <div style="text-align:right">
+                                <div style="font-size:10px;color:var(--muted)">-%${iskonto}</div>
+                                <div style="font-size:15px;font-weight:600;color:#059669">${satisFiyat.toFixed(2)} €</div>
+                            </div>` : ''}
+                            ${RATES.tryEur > 0 ? `
+                            <div style="text-align:right">
+                                <div style="font-size:10px;color:var(--muted)">Satış ₺</div>
+                                <div style="font-size:14px;font-weight:600;color:#0f172a">${Math.round(satisTry).toLocaleString('tr-TR')} ₺</div>
+                            </div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        }
         listeSec.innerHTML = `<div class="liste-notfound">
-            Bu ürün için katalogda liste fiyatı bulunamadı.<br>
+            Bu ürün için katalogda birebir liste fiyatı bulunamadı.<br>
             <small>${tip} tipi • Ø${cap}mm • B${fg}mm • d${p.gobek} • Z${ds}</small>
-        </div>`;
+        </div>${benzerHTML}`;
     }
 
     document.getElementById('results').style.display = 'block';
@@ -1055,6 +1401,161 @@ function showError(msg) {
 }
 function hideError() { document.getElementById('errorBox').style.display = 'none'; }
 
+// ═══════════════════════════════════════════════
+//  AYARLAR PANELİ
+// ═══════════════════════════════════════════════
+
+const LS_KEY   = 'testere_fiyatlar_v1';
+const LS_PW    = 'testere_sifre_v1';
+let settingsUnlocked = false;
+
+function getPassword() {
+    return localStorage.getItem(LS_PW) || '3940';
+}
+
+function loadSavedPrices() {
+    try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (data.dis) {
+            data.dis.forEach((kgUSD, i) => {
+                if (i < DIS.length && kgUSD > 0) {
+                    DIS[i].kgUSD = kgUSD;
+                    DIS[i].fUSD  = disFiyatHesapla(DIS[i]);
+                }
+            });
+        }
+        if (data.govde) {
+            data.govde.forEach(({idx, f}) => {
+                if (idx < GOVDE.length && f > 0) GOVDE[idx].f = f;
+            });
+        }
+        if (data.kutu > 0) KUTU_MALIYET_AYAR = data.kutu;
+    } catch(e) {}
+}
+
+function openSettings() {
+    settingsUnlocked = false;
+    document.getElementById('pwScreen').style.display = 'block';
+    document.getElementById('settingsPanel').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwError').style.display = 'none';
+    document.getElementById('saveOk').style.display = 'none';
+    document.getElementById('settingsOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function closeSettings() {
+    document.getElementById('settingsOverlay').classList.remove('open');
+}
+
+function checkPassword() {
+    const val = document.getElementById('pwInput').value;
+    if (val === getPassword()) {
+        document.getElementById('pwScreen').style.display = 'none';
+        document.getElementById('settingsPanel').style.display = 'block';
+        settingsUnlocked = true;
+        buildSettingsPanel();
+    } else {
+        document.getElementById('pwError').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+        document.getElementById('pwInput').focus();
+    }
+}
+
+function buildSettingsPanel() {
+    // Kutu
+    document.getElementById('sKutu').value = KUTU_MALIYET_AYAR;
+
+    // Diş fiyatları — sadece kg fiyatı göster, gramaj sabit
+    const disContainer = document.getElementById('disRows');
+    disContainer.innerHTML = DIS.map((d, i) => `
+        <div class="price-row">
+            <div class="price-row-label">
+                ${d.marka} — ${d.u}×${d.g}mm
+                <span>${d.gr}g/adet → adet: ${disFiyatHesapla({...d,kgUSD:d.kgUSD}).toFixed(4)} USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_${i}" type="number" step="1" min="0"
+                    value="${d.kgUSD}" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+            </div>
+        </div>`).join('');
+
+    // Tüm gövde fiyatları
+    const govdeContainer = document.getElementById('govdeRows');
+    govdeContainer.innerHTML = GOVDE.map((g, idx) => `
+        <div class="price-row">
+            <div class="price-row-label">Ø${g.cap}mm × ${g.k}mm</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_${idx}" type="number" step="0.01" min="0"
+                    value="${g.f.toFixed(2)}" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+            </div>
+        </div>`).join('');
+}
+
+function savePrices() {
+    const kutu = parseFloat(document.getElementById('sKutu').value);
+    if (kutu > 0) KUTU_MALIYET_AYAR = kutu;
+
+    // Diş: sadece kg fiyatı → adet fiyatı hesapla
+    const disKgFiyatlar = DIS.map((d, i) => {
+        const kg = parseFloat(document.getElementById('sDisKg_' + i).value);
+        if (kg > 0) {
+            DIS[i].kgUSD = kg;
+            DIS[i].fUSD  = disFiyatHesapla(DIS[i]);
+        }
+        return DIS[i].kgUSD;
+    });
+
+    const govdeFiyatlar = GOVDE.map((g, idx) => {
+        const v = parseFloat(document.getElementById('sGovde_' + idx).value);
+        if (v > 0) GOVDE[idx].f = v;
+        return {idx, f: GOVDE[idx].f};
+    });
+
+    localStorage.setItem(LS_KEY, JSON.stringify({
+        dis: disKgFiyatlar,
+        govde: govdeFiyatlar,
+        kutu: KUTU_MALIYET_AYAR,
+    }));
+
+    const ok = document.getElementById('saveOk');
+    ok.style.display = 'block';
+    setTimeout(() => { ok.style.display = 'none'; closeSettings(); }, 1500);
+}
+
+function resetPrices() {
+    if (!confirm('Tüm fiyatlar varsayılan değerlere sıfırlanacak. Emin misiniz?')) return;
+    localStorage.removeItem(LS_KEY);
+    DIS_VARSAYILAN.forEach((d, i) => { DIS[i].kgUSD = d.kgUSD; DIS[i].fUSD = disFiyatHesapla(d); });
+    KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
+    buildSettingsPanel();
+    alert('Fiyatlar sıfırlandı.');
+}
+
+function changePassword() {
+    const p1 = document.getElementById('newPw1').value;
+    const p2 = document.getElementById('newPw2').value;
+    const msg = document.getElementById('pwChangeMsg');
+    if (!p1) { msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='Şifre boş olamaz.'; return; }
+    if (p1 !== p2) { msg.style.display='block'; msg.style.color='#dc2626'; msg.textContent='Şifreler eşleşmiyor.'; return; }
+    localStorage.setItem(LS_PW, p1);
+    msg.style.display='block'; msg.style.color='#059669'; msg.textContent='✓ Şifre değiştirildi.';
+    document.getElementById('newPw1').value = '';
+    document.getElementById('newPw2').value = '';
+    setTimeout(() => msg.style.display='none', 2000);
+}
+
+// ESC ile kapat
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
+// Overlay dışına tıklayınca kapat
+document.getElementById('settingsOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSettings();
+});
+
 // ── Global hata yakalayıcı ──
 window.onerror = function(msg, src, line) {
     var el = document.getElementById('errorBox');
@@ -1073,7 +1574,37 @@ window.onerror = function(msg, src, line) {
 })();
 
 // ── İlk yükleme ──
+loadSavedPrices();
 fetchRates();
+
+// ── Ana sayfa giriş şifresi ──
+const LS_GIRIS = 'testere_giris_v1';
+
+function checkLogin() {
+    const val = document.getElementById('loginInput').value;
+    if (val === getPassword()) {
+        sessionStorage.setItem(LS_GIRIS, '1');
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('loginInput').value = '';
+    } else {
+        const err = document.getElementById('loginErr');
+        err.style.display = 'block';
+        document.getElementById('loginInput').value = '';
+        document.getElementById('loginInput').focus();
+        setTimeout(() => { err.style.display = 'none'; }, 2500);
+    }
+}
+
+(function() {
+    if (sessionStorage.getItem(LS_GIRIS) === '1') {
+        document.getElementById('loginOverlay').style.display = 'none';
+    } else {
+        setTimeout(function() {
+            var el = document.getElementById('loginInput');
+            if (el) el.focus();
+        }, 150);
+    }
+})();
 </script>
 </body>
 </html>
