@@ -1561,6 +1561,7 @@ function loadSavedPrices() {
             });
         }
         if (data.kutu > 0) KUTU_MALIYET_AYAR = data.kutu;
+        if (data.wire > 0) KAYNAK_TEL_FIYAT = data.wire;
         if (data.sabit) Object.keys(SABIT_GIDERLER).forEach(k => { if (data.sabit[k] !== undefined) SABIT_GIDERLER[k] = data.sabit[k]; });
         if (data.calisma > 0) AYLIK_CALISMA_SAATI = data.calisma;
     } catch(e) {}
@@ -1610,6 +1611,7 @@ function buildSettingsPanel() {
     document.getElementById('sCalisma').value = AYLIK_CALISMA_SAATI;
 
     // Kutu
+    document.getElementById('sWire').value = KAYNAK_TEL_FIYAT;
     document.getElementById('sKutu').value = KUTU_MALIYET_AYAR;
 
     // Diş fiyatları — sadece kg fiyatı göster, gramaj sabit
@@ -1649,6 +1651,9 @@ function savePrices() {
     const calisma = parseInt(document.getElementById('sCalisma').value);
     if (calisma > 0) AYLIK_CALISMA_SAATI = calisma;
 
+    const wire = parseFloat(document.getElementById('sWire').value);
+    if (wire > 0) KAYNAK_TEL_FIYAT = wire;
+
     const kutu = parseFloat(document.getElementById('sKutu').value);
     if (kutu > 0) KUTU_MALIYET_AYAR = kutu;
 
@@ -1672,6 +1677,7 @@ function savePrices() {
         dis: disKgFiyatlar,
         govde: govdeFiyatlar,
         kutu: KUTU_MALIYET_AYAR,
+        wire: KAYNAK_TEL_FIYAT,
         sabit: SABIT_GIDERLER,
         calisma: AYLIK_CALISMA_SAATI,
     }));
@@ -1686,6 +1692,7 @@ function resetPrices() {
     localStorage.removeItem(LS_KEY);
     DIS_VARSAYILAN.forEach((d, i) => { DIS[i].kgUSD = d.kgUSD; DIS[i].fUSD = disFiyatHesapla(d); });
     KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
+    KAYNAK_TEL_FIYAT = KAYNAK_TEL_VARSAYILAN;
     SABIT_GIDERLER = { kira: 40000, maas: 48000, elektrik: 25000, ongorulemeyen: 10000, diger: 5000 };
     AYLIK_CALISMA_SAATI = 198;
     buildSettingsPanel();
