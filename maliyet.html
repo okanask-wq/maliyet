@@ -221,6 +221,11 @@
         .prod-val { font-size: 26px; font-weight: 800; color: var(--primary); }
         .prod-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
+        /* ── GOVDE TABS ── */
+        .govde-tab { border:1px solid #bfdbfe; background:#eff6ff; color:#1d4ed8; border-radius:6px; padding:2px 10px; font-size:11px; font-weight:600; cursor:pointer; transition:all .15s; }
+        .govde-tab.active { background:#2563eb; color:white; border-color:#2563eb; }
+        .govde-tab:hover:not(.active) { background:#dbeafe; }
+
         /* ── LIST PRICE ── */
         .liste-found { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #86efac; border-radius:13px; padding:18px 20px; }
         .liste-kod-badge { display:inline-block; background:#16a34a; color:white; border-radius:6px; padding:3px 10px; font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:14px; }
@@ -466,7 +471,7 @@
                 <div class="rvalue" id="rTryEur">—</div>
             </div>
         </div>
-        <button class="refresh-btn" id="refreshBtn" onclick="fetchRates()" title="Kurları Güncelle">↻</button>
+        <button class="refresh-btn" id="refreshBtn" onclick="fetchRates(true)" title="Kurları Güncelle">↻</button>
         <button class="settings-btn" onclick="openSettings()" title="Fiyat Güncelleme">🔒</button>
     </div>
 </header>
@@ -538,13 +543,17 @@
                 <div class="cost-item">
                     <div class="cost-item-left">
                         <div class="cost-icon ic-blue">🔵</div>
-                        <div>
-                            <div class="cost-name">Gövde Maliyeti</div>
+                        <div style="flex:1">
+                            <div class="cost-name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                                Gövde Maliyeti
+                                <span id="govdeTabs" style="display:none;gap:4px"></span>
+                            </div>
                             <div class="cost-detail" id="rBodyDet">—</div>
                         </div>
                     </div>
                     <div class="cost-eur"><span id="rBodyCost">—</span><span class="cur">EUR</span></div>
                 </div>
+                <div id="lazerNot" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11.5px;color:#1d4ed8;margin-top:-6px;margin-bottom:4px;"></div>
                 <div id="govdeUyari" style="display:none;background:#fef9ec;border:1px solid #fbbf24;border-radius:8px;padding:9px 13px;font-size:12px;color:#92400e;margin-top:-6px;margin-bottom:4px;line-height:1.5;"></div>
                 <div class="cost-item">
                     <div class="cost-item-left">
@@ -698,12 +707,44 @@
         <div class="settings-section">
           <h3>💎 Diş Fiyatları (USD / adet)</h3>
           <div id="disRows"></div>
+          <div style="font-size:10.5px;color:var(--muted);margin:6px 0 4px;font-weight:600">YENİ DİŞ ÇEŞİDİ EKLE — U(uzunluk) / G(genişlik) / Tel(mm) / Ağırlık(g) / $/kg</div>
+          <div id="disEkRows"></div>
+          <button onclick="document.getElementById('disEkRows').insertAdjacentHTML('beforeend', buildDisEkRow(null))"
+            style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Diş Ekle</button>
         </div>
 
-        <!-- Gövde fiyatları (sık değişenler) -->
+        <!-- Uğur Gövde fiyatları -->
         <div class="settings-section">
-          <h3>🔵 Sık Değişen Gövde Fiyatları (EUR)</h3>
+          <h3>🔵 Gövde Fiyatları — Uğur (EUR)</h3>
           <div id="govdeRows"></div>
+          <div style="font-size:10.5px;color:var(--muted);margin:6px 0 4px;font-weight:600">YENİ GÖVDE EKLE (Uğur) — Çap / Kalınlık / Fiyat</div>
+          <div id="govdeEkRows"></div>
+          <button onclick="document.getElementById('govdeEkRows').insertAdjacentHTML('beforeend', buildGovdeEkRow(null))"
+            style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Uğur Gövde Ekle</button>
+        </div>
+
+        <!-- Lazer Kesim Gövde fiyatları -->
+        <div class="settings-section">
+          <h3>⚡ Lazer Kesim Gövde Fiyatları (EUR)</h3>
+          <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">Bu fiyatlar girilirse maliyet ekranında Uğur / Lazer Kesim seçeneği çıkar.</div>
+          <div style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;font-size:10px;color:var(--muted);font-weight:600;padding:0 8px;margin-bottom:2px">
+            <span>Çap (mm)</span><span>Kalınlık</span><span>Fiyat (€)</span><span></span>
+          </div>
+          <div id="lazerRows"></div>
+          <button onclick="document.getElementById('lazerRows').insertAdjacentHTML('beforeend', buildLazerRow(null))"
+            style="font-size:12px;padding:5px 14px;background:#dcfce7;color:#16a34a;border:1px solid #86efac;border-radius:7px;cursor:pointer;margin-top:4px">+ Lazer Gövde Ekle</button>
+        </div>
+
+        <!-- Standart Dışı Özel Liste Fiyatları -->
+        <div class="settings-section">
+          <h3>📋 Standart Dışı Özel Liste Fiyatları</h3>
+          <div style="font-size:11.5px;color:var(--muted);margin-bottom:8px">Bu ölçülerdeki testere için özel fiyat verildiyse buraya gir. Birebir eşleşme olmadığında bu fiyatlar da gösterilir.</div>
+          <div style="display:grid;grid-template-columns:70px 58px 52px 52px 52px 65px 1fr 30px;gap:4px;font-size:10px;color:var(--muted);font-weight:600;padding:0 8px;margin-bottom:2px">
+            <span>Tip</span><span>Ø (mm)</span><span>B (mm)</span><span>Göbek</span><span>Z (diş)</span><span>€ Fiyat</span><span>Kod</span><span></span>
+          </div>
+          <div id="ozelRows"></div>
+          <button onclick="document.getElementById('ozelRows').insertAdjacentHTML('beforeend', buildOzelRow(null))"
+            style="font-size:12px;padding:5px 14px;background:#fef9c3;color:#a16207;border:1px solid #fde68a;border-radius:7px;cursor:pointer;margin-top:4px">+ Özel Fiyat Ekle</button>
         </div>
 
         <div class="settings-actions">
@@ -806,10 +847,24 @@ const DIS_VARSAYILAN = [
 // fUSD adet fiyatını kgUSD ve gramajdan hesapla
 function disFiyatHesapla(d) { return d.kgUSD / 1000 * d.gr; }
 let DIS = DIS_VARSAYILAN.map(d => ({...d, fUSD: disFiyatHesapla(d)}));
+const _DIS_BASE_LEN = DIS.length;
 
 // Tüm gövde indisleri ayarlar panelinde gösterilir
 const GOVDE_DEGISKEN_IDX = GOVDE.map((_, i) => i);
 const KUTU_VARSAYILAN = 1.5;
+
+// ── Lazer Kesim gövde fiyatları (başlangıçta boş, ayarlardan eklenir) ──
+let GOVDE_LAZER = []; // {cap, k, f}
+
+// ── Standart dışı özel liste fiyatları (ayarlardan eklenir) ──
+let OZEL_FIYATLAR = []; // {kod, tip, D, B, Z, eur}
+
+// ── Aktif gövde kaynağı: 'ugur' | 'lazer' ──
+let AKTIF_GOVDE_KAYNAK = 'ugur';
+
+// ── Sabit dizi uzunlukları (kullanıcı eklentileri ayrı tutmak için) ──
+// NOT: DIS için _DIS_BASE_LEN aşağıda DIS tanımlandıktan sonra set edilir
+const _GOVDE_BASE_LEN = GOVDE.length;
 let KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
 
 const SABIT_KATEGORILER = [
@@ -1031,34 +1086,41 @@ const LISTE_FIYAT = {
 };
 
 function findListeFiyat(tip, D, B, d, Z) {
+    // Önce standart dışı özel fiyatlarda ara (tam eşleşme)
+    const ozelExact = OZEL_FIYATLAR.find(r =>
+        r.tip === tip && r.D === D && r.Z === Z
+    );
+    if (ozelExact) return { ...ozelExact, d: [ozelExact.d || d], ozel: true };
+
     const tablo = LISTE_FIYAT[tip];
     if (!tablo) return null;
-    // Göbek (d) opsiyonel — çap, kalınlık ve diş sayısı öncelikli
     return tablo.find(r =>
-        r.D === D &&
-        Math.abs(r.B - B) < 0.05 &&
-        r.Z === Z
+        r.D === D && Math.abs(r.B - B) < 0.05 && r.Z === Z
     ) || tablo.find(r =>
-        r.D === D &&
-        r.Z === Z
+        r.D === D && r.Z === Z
     ) || null;
 }
 
 function findBenzerListeFiyat(tip, D, Z) {
-    const tablo = LISTE_FIYAT[tip];
-    if (!tablo || tablo.length === 0) return [];
-    // Skor: çap farkı daha ağırlıklı, diş sayısı ikincil
-    const scored = tablo.map(r => ({
+    const tablo = LISTE_FIYAT[tip] || [];
+
+    // Özel fiyatları da dahil et
+    const ozelTipFiyatlar = OZEL_FIYATLAR
+        .filter(r => r.tip === tip)
+        .map(r => ({ ...r, d: [r.d || 30], ozel: true }));
+
+    const tumFiyatlar = [...tablo, ...ozelTipFiyatlar];
+    if (tumFiyatlar.length === 0) return [];
+
+    const scored = tumFiyatlar.map(r => ({
         ...r,
         _score: Math.abs(r.D - D) * 3 + Math.abs(r.Z - Z) * 0.5
     })).sort((a, b) => a._score - b._score);
 
-    // Bir alt çap (D <= istenen) ve bir üst çap (D >= istenen) bul
     const alt = scored.filter(r => r.D <= D).slice(0, 1);
     const ust = scored.filter(r => r.D >= D).slice(0, 1);
     const combined = [...alt];
     ust.forEach(r => { if (!combined.find(c => c.kod === r.kod)) combined.push(r); });
-    // Gerekirse 3. en yakını ekle
     scored.forEach(r => {
         if (combined.length < 3 && !combined.find(c => c.kod === r.kod)) combined.push(r);
     });
@@ -1100,9 +1162,39 @@ function onManualRate() {
     }
 }
 
-async function fetchRates() {
+const RATE_CACHE_KEY = 'testere_rates_v1';
+const RATE_CACHE_TTL = 4 * 60 * 60 * 1000; // 4 saat (ms)
+
+function loadCachedRates() {
+    try {
+        const raw = localStorage.getItem(RATE_CACHE_KEY);
+        if (!raw) return false;
+        const { eurTry, usdTry, date, ts } = JSON.parse(raw);
+        if (Date.now() - ts > RATE_CACHE_TTL) return false; // süresi dolmuş
+        applyRates(eurTry, usdTry, date + ' (önbellek)');
+        return true;
+    } catch { return false; }
+}
+
+function saveCachedRates(eurTry, usdTry, date) {
+    try {
+        localStorage.setItem(RATE_CACHE_KEY, JSON.stringify({ eurTry, usdTry, date, ts: Date.now() }));
+    } catch {}
+}
+
+async function fetchRates(force = false) {
     const btn = document.getElementById('refreshBtn');
     btn.classList.add('spinning'); btn.disabled = true;
+
+    // Önce önbellekten yükle — hızlı görünüm
+    const cached = loadCachedRates();
+    if (cached && !force) {
+        btn.classList.remove('spinning'); btn.disabled = false;
+        // Arka planda sessizce güncelle
+        _fetchRatesBackground();
+        return;
+    }
+
     try {
         const [r1, r2] = await Promise.all([
             fetch('https://api.frankfurter.app/latest?from=USD&to=EUR').then(r => r.json()),
@@ -1112,18 +1204,33 @@ async function fetchRates() {
         const tryEur = r2.rates.EUR;
         const eurTry = 1 / tryEur;
         const usdTry = usdEur / tryEur;
-        applyRates(eurTry, usdTry, r1.date || 'canlı');
+        const date   = r1.date || 'canlı';
+        applyRates(eurTry, usdTry, date);
+        saveCachedRates(eurTry, usdTry, date);
     } catch(e) {
-        // API'ye ulaşılamadı — alanlar boş kalır, kullanıcı manuel girer
         document.getElementById('rDate').textContent   = '⚠ elle girin';
         document.getElementById('rStatus').textContent = '⚠ elle girin';
-        if (!RATES.tryEur) {
-            // Son çare: tahmini değer yükle
-            applyRates(38.0, 35.0, '⚠ tahmini');
-        }
+        if (!RATES.tryEur) applyRates(38.0, 35.0, '⚠ tahmini');
     } finally {
         btn.classList.remove('spinning'); btn.disabled = false;
     }
+}
+
+async function _fetchRatesBackground() {
+    try {
+        const [r1, r2] = await Promise.all([
+            fetch('https://api.frankfurter.app/latest?from=USD&to=EUR').then(r => r.json()),
+            fetch('https://api.frankfurter.app/latest?from=TRY&to=EUR').then(r => r.json()),
+        ]);
+        const usdEur = r1.rates.EUR;
+        const tryEur = r2.rates.EUR;
+        const eurTry = 1 / tryEur;
+        const usdTry = usdEur / tryEur;
+        const date   = r1.date || 'canlı';
+        saveCachedRates(eurTry, usdTry, date);
+        // Eğer tarih değiştiyse UI'ı güncelle
+        applyRates(eurTry, usdTry, date);
+    } catch {}
 }
 
 // ═══════════════════════════════════════════════
@@ -1155,7 +1262,35 @@ function parseSaw(raw) {
     return { tip, cap, fg, gobek, ds: Math.round(ds) };
 }
 
-// Belirli bir çap için kalınlık interpolasyonlu fiyat döndürür
+// ── Lazer kesim için yardımcılar (GOVDE_LAZER kullanır) ──
+function govdePriceForCapLazer(targetCap, minK) {
+    const sameCap = GOVDE_LAZER.filter(g => g.cap === targetCap).sort((a, b) => a.k - b.k);
+    if (sameCap.length === 0) return null;
+    const aboveList = sameCap.filter(g => g.k >= minK - 0.001);
+    if (aboveList.length === 0) {
+        const nearest = sameCap[sameCap.length - 1];
+        return { f: nearest.f, k: nearest.k, kInterp: false, kApprox: true, kRequested: minK };
+    }
+    const above = aboveList[0];
+    if (Math.abs(above.k - minK) < 0.001) return { f: above.f, k: above.k, kInterp: false };
+    const belowList = sameCap.filter(g => g.k < minK - 0.001);
+    if (belowList.length === 0) return { f: above.f, k: above.k, kInterp: false };
+    const below = belowList[belowList.length - 1];
+    const ratio  = (minK - below.k) / (above.k - below.k);
+    return { f: below.f + (above.f - below.f) * ratio, k: minK, kInterp: true, kBelow: below, kAbove: above };
+}
+
+function findGovdeLazer(cap, minK) {
+    if (GOVDE_LAZER.length === 0) return null;
+    // Sadece TAM AYNI ÇAP — farklı çap muadil gösterilmez
+    const sameCap = GOVDE_LAZER.filter(g => g.cap === cap);
+    if (sameCap.length === 0) return null;
+    const r = govdePriceForCapLazer(cap, minK);
+    if (!r) return null;
+    return { cap, f: r.f, k: r.k, capInterp: false, kInterp: r.kInterp, kApprox: r.kApprox, kRequested: r.kRequested };
+}
+
+// ── Orijinal Uğur gövdesi için yardımcı ──
 function govdePriceForCap(targetCap, minK) {
     const sameCap = GOVDE.filter(g => g.cap === targetCap).sort((a, b) => a.k - b.k);
     if (sameCap.length === 0) return null;
@@ -1283,9 +1418,14 @@ function _doCalculate() {
     const tolerans = TOLERANS[tip];
     const minK     = parseFloat((fg - tolerans).toFixed(4));
 
-    const govde = findGovde(cap, minK);
-    if (!govde) return showError(
+    const govdeUgur = findGovde(cap, minK);
+    if (!govdeUgur) return showError(
         `${cap}mm çap için uygun gövde bulunamadı. (aranan min. kalınlık: ${minK.toFixed(1)}mm)`);
+
+    const govdeLazer = findGovdeLazer(cap, minK); // null ise lazer seçeneği yok
+
+    // Aktif kaynağa göre gövde seç
+    const govde = (AKTIF_GOVDE_KAYNAK === 'lazer' && govdeLazer) ? govdeLazer : govdeUgur;
 
     const dis = findDis(tip, fg);
     if (!dis) return showError(
@@ -1342,7 +1482,31 @@ function _doCalculate() {
     }
     set('rBodyCost', fmt(govdeMaliyet));
 
-    set('rToothDet', `${dis.marka} • ${dis.u}×${dis.g}mm • ${ds} adet`);
+    // ── Gövde kaynak tab butonları ──
+    const govdeTabsEl = document.getElementById('govdeTabs');
+    if (govdeTabsEl) {
+        if (govdeLazer) {
+            govdeTabsEl.style.display = 'inline-flex';
+            govdeTabsEl.innerHTML = `
+                <button class="govde-tab ${AKTIF_GOVDE_KAYNAK==='ugur'?'active':''}" onclick="switchGovde('ugur')">🔵 Uğur</button>
+                <button class="govde-tab ${AKTIF_GOVDE_KAYNAK==='lazer'?'active':''}" onclick="switchGovde('lazer')">⚡ Lazer Kesim</button>`;
+        } else {
+            govdeTabsEl.style.display = 'none';
+        }
+    }
+
+    // Lazer fiyat notu (seçili değilken göster)
+    const lazerNot = document.getElementById('lazerNot');
+    if (lazerNot) {
+        if (govdeLazer && AKTIF_GOVDE_KAYNAK === 'ugur') {
+            lazerNot.style.display = 'block';
+            lazerNot.textContent = `⚡ Lazer kesim alternatifi mevcut: ${fmt(govdeLazer.f)} € (Uğur'dan ${govdeLazer.f < govdeUgur.f ? '%.1f€ ucuz'.replace('%.1f', fmt(govdeUgur.f - govdeLazer.f)) : '%.1f€ pahalı'.replace('%.1f', fmt(govdeLazer.f - govdeUgur.f))})`;
+        } else {
+            lazerNot.style.display = 'none';
+        }
+    }
+
+    set('rToothDet', `${dis.marka} • ${dis.u}×${dis.g}mm • ${ds} adet • ${dis.kgUSD} $/kg`);
     set('rToothCost',fmt(disMaliyet));
 
     set('rWireDet',  `${dis.tel}mm/diş × ${ds} diş = ${telToplamMM}mm (~${telGram.toFixed(2)}g)`);
@@ -1367,20 +1531,22 @@ function _doCalculate() {
     const listeSec   = document.getElementById('listeSec');
 
     if (listeSonuc) {
-        const satisFiyat  = listeSonuc.eur * (1 - iskonto / 100);
+        // Özel (standart dışı) fiyatlara iskonto uygulanmaz
+        const satisFiyat  = listeSonuc.ozel ? listeSonuc.eur : listeSonuc.eur * (1 - iskonto / 100);
         const karHammadde = satisFiyat - degiskenToplam;
         const karPctHam   = satisFiyat > 0 ? (karHammadde / satisFiyat) * 100 : 0;
         const karRenk     = karHammadde >= 0 ? '#16a34a' : '#dc2626';
+        const gobeks      = listeSonuc.d ? listeSonuc.d.join('/') : (p.gobek||'—');
         listeSec.innerHTML = `
-        <div class="liste-found">
-            <span class="liste-kod-badge">${listeSonuc.kod} &nbsp;·&nbsp; Ø${listeSonuc.D}×${listeSonuc.B}×${listeSonuc.d.join('/')}×${listeSonuc.Z}</span>
+        <div class="liste-found" style="${listeSonuc.ozel ? 'background:linear-gradient(135deg,#fefce8,#fef9c3);border-color:#fde68a' : ''}">
+            <span class="liste-kod-badge" style="${listeSonuc.ozel ? 'background:#a16207' : ''}">${listeSonuc.kod} &nbsp;·&nbsp; Ø${listeSonuc.D}×${listeSonuc.B}×${gobeks}×${listeSonuc.Z}${listeSonuc.ozel?' ⭐':''}</span>
             <div class="liste-grid">
                 <div class="liste-item">
-                    <div class="liste-lbl">Liste Fiyatı</div>
+                    <div class="liste-lbl">${listeSonuc.ozel ? 'Özel Fiyat' : 'Liste Fiyatı'}</div>
                     <div class="liste-val">${listeSonuc.eur.toFixed(0)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
-                    <div class="liste-lbl">Satış Fiyatı${iskonto > 0 ? ' (-%'+iskonto+')' : ''}</div>
+                    <div class="liste-lbl">${listeSonuc.ozel ? 'Satış Fiyatı' : ('Satış Fiyatı'+(iskonto > 0 ? ' (-%'+iskonto+')' : ''))}</div>
                     <div class="liste-val">${satisFiyat.toFixed(2)}<span class="lc"> €</span></div>
                 </div>
                 <div class="liste-item">
@@ -1403,27 +1569,32 @@ function _doCalculate() {
                     📋 Kataloğumuzdan Benzer Ürünler (Tavsiye Niteliğinde)
                 </div>
                 ${benzerler.map(r => {
-                    const satisFiyat = r.eur * (1 - iskonto / 100);
+                    // Özel (standart dışı) fiyatlara iskonto uygulanmaz — direkt fiyat
+                    const satisFiyat = r.ozel ? r.eur : r.eur * (1 - iskonto / 100);
                     const satisTry   = RATES.tryEur > 0 ? satisFiyat / RATES.tryEur : 0;
+                    const gobek      = r.d ? r.d.join('/') : '—';
+                    const badgeRenk  = r.ozel ? '#a16207' : '#2563eb';
+                    const badgeEtiket = r.ozel ? '⭐ ÖZEL' : '';
                     return `
-                    <div style="background:#f8fafc;border:1px solid var(--border2);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+                    <div style="background:${r.ozel?'#fefce8':'#f8fafc'};border:1px solid ${r.ozel?'#fde68a':'var(--border2)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
                         <div>
-                            <span style="background:#2563eb;color:white;border-radius:5px;padding:2px 9px;font-size:11px;font-weight:700;letter-spacing:.4px">${r.kod}</span>
-                            <span style="margin-left:8px;font-size:12px;color:var(--muted)">Ø${r.D}×${r.B}×${r.d.join('/')}×${r.Z}</span>
+                            <span style="background:${badgeRenk};color:white;border-radius:5px;padding:2px 9px;font-size:11px;font-weight:700;letter-spacing:.4px">${r.kod}</span>
+                            ${badgeEtiket ? `<span style="margin-left:5px;font-size:10px;color:#a16207;font-weight:600">${badgeEtiket}</span>` : ''}
+                            <span style="margin-left:8px;font-size:12px;color:var(--muted)">Ø${r.D}×${r.B}×${gobek}×${r.Z}</span>
                         </div>
                         <div style="display:flex;gap:14px;align-items:center">
                             <div style="text-align:right">
-                                <div style="font-size:10px;color:var(--muted)">Liste</div>
+                                <div style="font-size:10px;color:var(--muted)">${r.ozel ? 'Özel Fiyat' : 'Liste'}</div>
                                 <div style="font-size:16px;font-weight:700;color:var(--text)">${r.eur.toFixed(0)} €</div>
                             </div>
-                            ${iskonto > 0 ? `
+                            ${!r.ozel && iskonto > 0 ? `
                             <div style="text-align:right">
                                 <div style="font-size:10px;color:var(--muted)">-%${iskonto}</div>
                                 <div style="font-size:15px;font-weight:600;color:#059669">${satisFiyat.toFixed(2)} €</div>
                             </div>` : ''}
                             ${RATES.tryEur > 0 ? `
                             <div style="text-align:right">
-                                <div style="font-size:10px;color:var(--muted)">Satış ₺</div>
+                                <div style="font-size:10px;color:var(--muted)">${r.ozel?'Fiyat ₺':'Satış ₺'}</div>
                                 <div style="font-size:14px;font-weight:600;color:#0f172a">${Math.round(satisTry).toLocaleString('tr-TR')} ₺</div>
                             </div>` : ''}
                         </div>
@@ -1519,6 +1690,11 @@ function _doCalculate() {
 //  YARDIMCI
 // ═══════════════════════════════════════════════
 
+function switchGovde(kaynak) {
+    AKTIF_GOVDE_KAYNAK = kaynak;
+    calculate(); // seçim değişince yeniden hesapla
+}
+
 function fmt(n) { return n.toFixed(3).replace('.',','); }
 function set(id, val) { document.getElementById(id).textContent = val; }
 function showError(msg) {
@@ -1555,10 +1731,26 @@ function loadSavedPrices() {
                 }
             });
         }
+        // Kullanıcının eklediği ek diş satırları
+        if (data.disEklenti) {
+            data.disEklenti.forEach(d => { DIS.push({...d, fUSD: disFiyatHesapla(d)}); });
+        }
         if (data.govde) {
             data.govde.forEach(({idx, f}) => {
                 if (idx < GOVDE.length && f > 0) GOVDE[idx].f = f;
             });
+        }
+        // Kullanıcının eklediği ek Uğur gövde satırları
+        if (data.govdeEklenti) {
+            data.govdeEklenti.forEach(g => { GOVDE.push(g); });
+        }
+        // Lazer kesim gövde fiyatları
+        if (data.govdeLazer) {
+            GOVDE_LAZER = data.govdeLazer;
+        }
+        // Standart dışı özel liste fiyatları
+        if (data.ozelFiyatlar) {
+            OZEL_FIYATLAR = data.ozelFiyatlar;
         }
         if (data.kutu > 0) KUTU_MALIYET_AYAR = data.kutu;
         if (data.wire > 0) KAYNAK_TEL_FIYAT = data.wire;
@@ -1614,9 +1806,9 @@ function buildSettingsPanel() {
     document.getElementById('sWire').value = KAYNAK_TEL_FIYAT;
     document.getElementById('sKutu').value = KUTU_MALIYET_AYAR;
 
-    // Diş fiyatları — sadece kg fiyatı göster, gramaj sabit
+    // ── Diş fiyatları (mevcut) ──
     const disContainer = document.getElementById('disRows');
-    disContainer.innerHTML = DIS.map((d, i) => `
+    disContainer.innerHTML = DIS.slice(0, _DIS_BASE_LEN).map((d, i) => `
         <div class="price-row">
             <div class="price-row-label">
                 ${d.marka} — ${d.u}×${d.g}mm
@@ -1629,9 +1821,14 @@ function buildSettingsPanel() {
             </div>
         </div>`).join('');
 
-    // Tüm gövde fiyatları
+    // ── Diş eklenti satırları ──
+    const disEkContainer = document.getElementById('disEkRows');
+    const disEklentiler = DIS.slice(_DIS_BASE_LEN);
+    disEkContainer.innerHTML = disEklentiler.map((d, i) => buildDisEkRow(d)).join('');
+
+    // ── Uğur Gövde fiyatları (mevcut) ──
     const govdeContainer = document.getElementById('govdeRows');
-    govdeContainer.innerHTML = GOVDE.map((g, idx) => `
+    govdeContainer.innerHTML = GOVDE.slice(0, _GOVDE_BASE_LEN).map((g, idx) => `
         <div class="price-row">
             <div class="price-row-label">Ø${g.cap}mm × ${g.k}mm</div>
             <div style="display:flex;align-items:center;gap:6px">
@@ -1640,6 +1837,63 @@ function buildSettingsPanel() {
                 <span style="font-size:12px;color:var(--muted)">EUR</span>
             </div>
         </div>`).join('');
+
+    // ── Uğur Gövde eklenti satırları ──
+    const govdeEkContainer = document.getElementById('govdeEkRows');
+    const govdeEklentiler = GOVDE.slice(_GOVDE_BASE_LEN);
+    govdeEkContainer.innerHTML = govdeEklentiler.map(g => buildGovdeEkRow(g)).join('');
+
+    // ── Lazer Kesim gövde satırları ──
+    const lazerContainer = document.getElementById('lazerRows');
+    lazerContainer.innerHTML = GOVDE_LAZER.map(g => buildLazerRow(g)).join('');
+
+    // ── Standart dışı özel fiyatlar ──
+    const ozelContainer = document.getElementById('ozelRows');
+    ozelContainer.innerHTML = OZEL_FIYATLAR.map(r => buildOzelRow(r)).join('');
+}
+
+function buildDisEkRow(d) {
+    return `<div class="sDisEkRow" style="display:grid;grid-template-columns:60px 60px 1fr 50px 55px 65px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:6px 8px">
+        <input class="price-input dek-u" type="number" step="0.5" min="0" placeholder="U(mm)" value="${d?d.u:''}" style="width:100%">
+        <input class="price-input dek-g" type="number" step="0.1" min="0" placeholder="G(mm)" value="${d?d.g:''}" style="width:100%">
+        <input class="price-input dek-marka" type="text" placeholder="Marka" value="${d?d.marka:''}" style="width:100%">
+        <input class="price-input dek-tel" type="number" step="1" min="0" placeholder="Tel" value="${d?d.tel:''}" style="width:100%">
+        <input class="price-input dek-gr" type="number" step="0.001" min="0" placeholder="gr" value="${d?d.gr:''}" style="width:100%">
+        <input class="price-input dek-kg" type="number" step="1" min="0" placeholder="$/kg" value="${d?d.kgUSD:''}" style="width:100%">
+        <button onclick="this.closest('.sDisEkRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div>`;
+}
+
+function buildGovdeEkRow(g) {
+    return `<div class="sGovdeEl" data-govdeel style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:6px 8px">
+        <input class="price-input ek-cap" type="number" step="1" min="0" placeholder="Ø çap" value="${g?g.cap:''}" style="width:100%">
+        <input class="price-input ek-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="${g?g.k:''}" style="width:100%">
+        <input class="price-input ek-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="${g?g.f.toFixed(2):''}" style="width:100%">
+        <button onclick="this.closest('[data-govdeel]').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div>`;
+}
+
+function buildLazerRow(g) {
+    return `<div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="${g?g.cap:''}" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="${g?g.k:''}" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="${g?g.f.toFixed(2):''}" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div>`;
+}
+
+function buildOzelRow(r) {
+    const TIP_SECENEKLER = ['AP','HW','RP','MRP','TCG'];
+    return `<div class="sOzelRow" style="display:grid;grid-template-columns:70px 58px 52px 52px 52px 65px 1fr 30px;gap:4px;align-items:center;margin-bottom:6px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:6px 8px">
+        <select class="price-input oz-tip" style="width:100%">${TIP_SECENEKLER.map(t=>`<option ${r&&r.tip===t?'selected':''}>${t}</option>`).join('')}</select>
+        <input class="price-input oz-d"    type="number" step="1"    min="0" placeholder="Ø mm"   value="${r?r.D:''}"      style="width:100%">
+        <input class="price-input oz-b"    type="number" step="0.1"  min="0" placeholder="B mm"   value="${r?r.B:''}"      style="width:100%">
+        <input class="price-input oz-gobek" type="number" step="1"   min="0" placeholder="Göbek"  value="${r?r.gobek||'':''}" style="width:100%">
+        <input class="price-input oz-z"    type="number" step="1"    min="0" placeholder="Z diş"  value="${r?r.Z:''}"      style="width:100%">
+        <input class="price-input oz-eur"  type="number" step="0.01" min="0" placeholder="€ fiyat" value="${r?r.eur:''}"   style="width:100%">
+        <input class="price-input oz-kod"  type="text"               placeholder="Kod (opsiyonel)" value="${r?r.kod:''}"   style="width:100%">
+        <button onclick="this.closest('.sOzelRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div>`;
 }
 
 function savePrices() {
@@ -1667,15 +1921,76 @@ function savePrices() {
         return DIS[i].kgUSD;
     });
 
-    const govdeFiyatlar = GOVDE.map((g, idx) => {
-        const v = parseFloat(document.getElementById('sGovde_' + idx).value);
+    // Orijinal Uğur gövde fiyatları
+    const govdeFiyatlar = GOVDE.slice(0, _GOVDE_BASE_LEN).map((g, idx) => {
+        const el = document.getElementById('sGovde_' + idx);
+        const v = el ? parseFloat(el.value) : g.f;
         if (v > 0) GOVDE[idx].f = v;
         return {idx, f: GOVDE[idx].f};
     });
 
+    // Eklenti Uğur gövdeleri (base'den sonrakiler) — input'lardan topla
+    const govdeEklenti = [];
+    document.querySelectorAll('.sGovdeEk').forEach(el => {
+        const row = el.closest('[data-govdeel]');
+        if (!row) return;
+        const cap = parseFloat(row.querySelector('.ek-cap').value);
+        const k   = parseFloat(row.querySelector('.ek-k').value);
+        const f   = parseFloat(row.querySelector('.ek-f').value);
+        if (cap > 0 && k > 0 && f > 0) govdeEklenti.push({cap, k, f});
+    });
+    // GOVDE dizisini base + yeni eklentilerle güncelle
+    GOVDE.splice(_GOVDE_BASE_LEN);
+    govdeEklenti.forEach(g => GOVDE.push(g));
+
+    // Lazer gövde fiyatları
+    const govdeLazer = [];
+    document.querySelectorAll('.sLazerRow').forEach(row => {
+        const cap = parseFloat(row.querySelector('.lz-cap').value);
+        const k   = parseFloat(row.querySelector('.lz-k').value);
+        const f   = parseFloat(row.querySelector('.lz-f').value);
+        if (cap > 0 && k > 0 && f > 0) govdeLazer.push({cap, k, f});
+    });
+    GOVDE_LAZER = govdeLazer;
+
+    // Eklenti diş satırları
+    const disEklenti = [];
+    document.querySelectorAll('.sDisEkRow').forEach(row => {
+        const u     = parseFloat(row.querySelector('.dek-u').value);
+        const g     = parseFloat(row.querySelector('.dek-g').value);
+        const marka = row.querySelector('.dek-marka').value.trim();
+        const tel   = parseFloat(row.querySelector('.dek-tel').value);
+        const gr    = parseFloat(row.querySelector('.dek-gr').value);
+        const kgUSD = parseFloat(row.querySelector('.dek-kg').value);
+        if (u > 0 && g > 0 && kgUSD > 0) disEklenti.push({u, g, marka: marka||'Özel', tel: tel||0, gr: gr||0, kgUSD});
+    });
+    // DIS dizisini base + yeni eklentilerle güncelle
+    DIS.splice(_DIS_BASE_LEN);
+    disEklenti.forEach(d => DIS.push({...d, fUSD: disFiyatHesapla(d)}));
+
+    // Standart dışı özel fiyatlar
+    const ozelFiyatlar = [];
+    document.querySelectorAll('.sOzelRow').forEach(row => {
+        const tip   = row.querySelector('.oz-tip').value.trim().toUpperCase();
+        const D     = parseFloat(row.querySelector('.oz-d').value);
+        const B     = parseFloat(row.querySelector('.oz-b').value);
+        const gobek = parseInt(row.querySelector('.oz-gobek').value) || 0;
+        const Z     = parseInt(row.querySelector('.oz-z').value);
+        const eur   = parseFloat(row.querySelector('.oz-eur').value);
+        const kodEl = row.querySelector('.oz-kod').value.trim();
+        // Kod otomatik: TIP-ÖZEL-DxZ (kullanıcı yazmamışsa)
+        const autoKod = `${tip}-ÖZEL-${D}x${Z}`;
+        if (tip && D > 0 && Z > 0 && eur > 0) ozelFiyatlar.push({tip, D, B: B||0, gobek, Z, eur, kod: kodEl||autoKod, d:[gobek||30]});
+    });
+    OZEL_FIYATLAR = ozelFiyatlar;
+
     localStorage.setItem(LS_KEY, JSON.stringify({
         dis: disKgFiyatlar,
+        disEklenti,
         govde: govdeFiyatlar,
+        govdeEklenti,
+        govdeLazer,
+        ozelFiyatlar,
         kutu: KUTU_MALIYET_AYAR,
         wire: KAYNAK_TEL_FIYAT,
         sabit: SABIT_GIDERLER,
@@ -1691,6 +2006,10 @@ function resetPrices() {
     if (!confirm('Tüm fiyatlar varsayılan değerlere sıfırlanacak. Emin misiniz?')) return;
     localStorage.removeItem(LS_KEY);
     DIS_VARSAYILAN.forEach((d, i) => { DIS[i].kgUSD = d.kgUSD; DIS[i].fUSD = disFiyatHesapla(d); });
+    DIS.splice(_DIS_BASE_LEN); // eklenti satırlarını temizle
+    GOVDE.splice(_GOVDE_BASE_LEN); // eklenti gövdeleri temizle
+    GOVDE_LAZER = [];
+    OZEL_FIYATLAR = [];
     KUTU_MALIYET_AYAR = KUTU_VARSAYILAN;
     KAYNAK_TEL_FIYAT = KAYNAK_TEL_VARSAYILAN;
     SABIT_GIDERLER = { kira: 40000, maas: 48000, elektrik: 25000, ongorulemeyen: 10000, diger: 5000 };
