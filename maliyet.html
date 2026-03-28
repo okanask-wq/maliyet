@@ -1714,6 +1714,14 @@ const LS_KEY   = 'testere_fiyatlar_v1';
 const LS_PW    = 'testere_sifre_v1';
 let settingsUnlocked = false;
 
+// ════════════════════════════════════════════
+//  VERİ VERSİYONU
+//  Gövde/diş listesinde değişiklik yaptığında
+//  bu sayıyı 1 artır → herkes yeni kodu alır
+//  (kişisel eklentiler/lazer/sabit korunur)
+// ════════════════════════════════════════════
+const DATA_VERSION = 2;
+
 function getPassword() {
     return localStorage.getItem(LS_PW) || '3940';
 }
@@ -1723,39 +1731,63 @@ function loadSavedPrices() {
         const raw = localStorage.getItem(LS_KEY);
         if (!raw) return;
         const data = JSON.parse(raw);
-        if (data.dis) {
-            data.dis.forEach((kgUSD, i) => {
-                if (i < DIS.length && kgUSD > 0) {
-                    DIS[i].kgUSD = kgUSD;
-                    DIS[i].fUSD  = disFiyatHesapla(DIS[i]);
-                }
-            });
+
+        const versiyon = data.dataVersion || 0;
+        const versiyonEski = versiyon < DATA_VERSION;
+
+        if (versiyonEski) {
+            // ── Versiyon güncellendi ──
+            // Temel gövde/diş fiyatları koddan alınır (kullanıcı override'ları temizlenir)
+            // Ama kişisel eklentiler, lazer, özel liste, sabit giderler KORUNUR
+            console.log(`[Maliyet] Data versiyon güncellendi: ${versiyon} → ${DATA_VERSION}. Temel fiyatlar yenilendi.`);
+            // Kullanıcıya güncelleme bildirimi (sayfa yüklendikten sonra göster)
+            setTimeout(() => {
+                const banner = document.createElement('div');
+                banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#16a34a;color:white;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.2)';
+                banner.innerHTML = '✅ Uygulama güncellendi — temel fiyat listesi yenilendi. Kişisel eklentileriniz korundu. <button onclick="this.parentNode.remove()" style="margin-left:14px;background:rgba(255,255,255,.25);border:none;color:white;border-radius:5px;padding:2px 10px;cursor:pointer">✕</button>';
+                document.body.prepend(banner);
+                setTimeout(() => banner.remove(), 8000);
+            }, 1200);
+        } else {
+            // Aynı versiyon → kullanıcının kaydettiği temel fiyat overridelarını yükle
+            if (data.dis) {
+                data.dis.forEach((kgUSD, i) => {
+                    if (i < _DIS_BASE_LEN && kgUSD > 0) {
+                        DIS[i].kgUSD = kgUSD;
+                        DIS[i].fUSD  = disFiyatHesapla(DIS[i]);
+                    }
+                });
+            }
+            if (data.govde) {
+                data.govde.forEach(({idx, f}) => {
+                    if (idx < _GOVDE_BASE_LEN && f > 0) GOVDE[idx].f = f;
+                });
+            }
         }
-        // Kullanıcının eklediği ek diş satırları
+
+        // ── Her versiyonda yüklenenler (kişisel veriler) ──
         if (data.disEklenti) {
             data.disEklenti.forEach(d => { DIS.push({...d, fUSD: disFiyatHesapla(d)}); });
         }
-        if (data.govde) {
-            data.govde.forEach(({idx, f}) => {
-                if (idx < GOVDE.length && f > 0) GOVDE[idx].f = f;
-            });
-        }
-        // Kullanıcının eklediği ek Uğur gövde satırları
         if (data.govdeEklenti) {
             data.govdeEklenti.forEach(g => { GOVDE.push(g); });
         }
-        // Lazer kesim gövde fiyatları
-        if (data.govdeLazer) {
-            GOVDE_LAZER = data.govdeLazer;
-        }
-        // Standart dışı özel liste fiyatları
-        if (data.ozelFiyatlar) {
-            OZEL_FIYATLAR = data.ozelFiyatlar;
-        }
-        if (data.kutu > 0) KUTU_MALIYET_AYAR = data.kutu;
-        if (data.wire > 0) KAYNAK_TEL_FIYAT = data.wire;
-        if (data.sabit) Object.keys(SABIT_GIDERLER).forEach(k => { if (data.sabit[k] !== undefined) SABIT_GIDERLER[k] = data.sabit[k]; });
+        if (data.govdeLazer)   GOVDE_LAZER   = data.govdeLazer;
+        if (data.ozelFiyatlar) OZEL_FIYATLAR = data.ozelFiyatlar;
+        if (data.kutu > 0)  KUTU_MALIYET_AYAR = data.kutu;
+        if (data.wire > 0)  KAYNAK_TEL_FIYAT  = data.wire;
+        if (data.sabit)     Object.keys(SABIT_GIDERLER).forEach(k => { if (data.sabit[k] !== undefined) SABIT_GIDERLER[k] = data.sabit[k]; });
         if (data.calisma > 0) AYLIK_CALISMA_SAATI = data.calisma;
+
+        // Eski versiyon kaydını yeni versiyonla güncelle (bir sonraki yüklemede override tekrar çalışsın)
+        if (versiyonEski) {
+            // Sadece dataVersion güncelle, diğer alanlar mevcut bellekten gelecek
+            try {
+                const mevcut = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+                mevcut.dataVersion = DATA_VERSION;
+                localStorage.setItem(LS_KEY, JSON.stringify(mevcut));
+            } catch(e) {}
+        }
     } catch(e) {}
 }
 
@@ -1985,6 +2017,7 @@ function savePrices() {
     OZEL_FIYATLAR = ozelFiyatlar;
 
     localStorage.setItem(LS_KEY, JSON.stringify({
+        dataVersion: DATA_VERSION,
         dis: disKgFiyatlar,
         disEklenti,
         govde: govdeFiyatlar,
