@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
+<html lang="tr"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -416,16 +415,15 @@
         <div class="login-logo">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" width="200" height="82">
                 <text x="160" y="62" font-family="Arial Black,Impact,sans-serif" font-size="60" font-weight="900" text-anchor="middle" fill="#0f2137" letter-spacing="-1">ARROW</text>
-                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"/>
-                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"/>
-                <polygon points="296,76 312,82 296,88" fill="#0f2137"/>
+                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"></circle>
+                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"></line>
+                <polygon points="296,76 312,82 296,88" fill="#0f2137"></polygon>
                 <text x="160" y="112" font-family="Arial,sans-serif" font-size="17" text-anchor="middle" fill="#0f2137" font-weight="600" letter-spacing="3">SEGA CIRCOLARE</text>
             </svg>
         </div>
         <div class="login-title">Maliyet Hesaplama</div>
         <div class="login-sub">Sisteme Hoş Geldiniz<br>Devam etmek için şifrenizi girin</div>
-        <input type="password" id="loginInput" class="login-input" placeholder="••••" maxlength="20"
-               onkeydown="if(event.key==='Enter') checkLogin()">
+        <input type="password" id="loginInput" class="login-input" placeholder="••••" maxlength="20" onkeydown="if(event.key==='Enter') checkLogin()">
         <button class="login-btn" type="button" onclick="checkLogin()" ontouchend="event.preventDefault();checkLogin()">
             Giriş Yap
         </button>
@@ -439,9 +437,9 @@
         <div class="header-icon" style="background:white;border-color:rgba(255,255,255,0.4);padding:4px;width:54px;height:54px;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" width="46" height="46">
                 <text x="160" y="62" font-family="Arial Black,Impact,sans-serif" font-size="60" font-weight="900" text-anchor="middle" fill="#0f2137" letter-spacing="-1">ARROW</text>
-                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"/>
-                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"/>
-                <polygon points="296,76 312,82 296,88" fill="#0f2137"/>
+                <circle cx="14" cy="82" r="8" fill="none" stroke="#0f2137" stroke-width="3"></circle>
+                <line x1="22" y1="82" x2="296" y2="82" stroke="#0f2137" stroke-width="2.5"></line>
+                <polygon points="296,76 312,82 296,88" fill="#0f2137"></polygon>
                 <text x="160" y="112" font-family="Arial,sans-serif" font-size="17" text-anchor="middle" fill="#0f2137" font-weight="600" letter-spacing="3">SEGA CIRCOLARE</text>
             </svg>
         </div>
@@ -455,20 +453,20 @@
             <div class="rate-chip highlight">
                 <div class="rlabel">1 € = ₺</div>
                 <input class="rate-input" id="inEurTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
-                <div class="rate-status" id="rDate">otomatik</div>
+                <div class="rate-status" id="rDate">2026-04-02</div>
             </div>
             <div class="rate-chip highlight">
                 <div class="rlabel">1 $ = ₺</div>
                 <input class="rate-input" id="inUsdTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
-                <div class="rate-status" id="rStatus">—</div>
+                <div class="rate-status" id="rStatus">2026-04-02</div>
             </div>
             <div class="rate-chip">
                 <div class="rlabel">USD / EUR</div>
-                <div class="rvalue" id="rUsdEur">—</div>
+                <div class="rvalue" id="rUsdEur">0.8677</div>
             </div>
             <div class="rate-chip">
                 <div class="rlabel">TRY / EUR</div>
-                <div class="rvalue" id="rTryEur">—</div>
+                <div class="rvalue" id="rTryEur">0.01950</div>
             </div>
         </div>
         <button class="refresh-btn" id="refreshBtn" onclick="fetchRates(true)" title="Kurları Güncelle">↻</button>
@@ -491,25 +489,18 @@
             <div class="field field-wide">
                 <label>Testere Kodu</label>
                 <div class="hint">Format: TİP ÇAPxDİŞGENİŞLİĞİxGÖBEKxDİŞSAYISI &nbsp;•&nbsp; Örnek: AP 300x3.2x30x96</div>
-                <input type="text" id="sawCode" placeholder="AP 300x3.2x30x96"
-                    autocorrect="off" autocapitalize="characters"
-                    spellcheck="false" autocomplete="off"
-                    oninput="this.value=this.value.toUpperCase()"
-                    onkeydown="if(event.key==='Enter')calculate()">
+                <input type="text" id="sawCode" placeholder="AP 300x3.2x30x96" autocorrect="off" autocapitalize="characters" spellcheck="false" autocomplete="off" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')calculate()">
             </div>
             <!-- kaynak teli fiyatı ayarlar panelinden yönetilir -->
             <div class="field">
                 <label>İskonto Oranı (%)</label>
                 <div class="hint">Liste fiyatından iskonto (sonraki versiyonda aktif)</div>
-                <input type="number" id="discountRate" placeholder="0" min="0" max="100"
-                    onkeydown="if(event.key==='Enter')calculate()">
+                <input type="number" id="discountRate" placeholder="0" min="0" max="100" onkeydown="if(event.key==='Enter')calculate()">
             </div>
         </div>
 
-        <button type="button" class="btn-calc" id="calcBtn"
-            onclick="calculate()"
-            ontouchend="calculate();event.preventDefault();">🔢 HESAPLA</button>
-        <div class="error-box" id="errorBox"></div>
+        <button type="button" class="btn-calc" id="calcBtn" onclick="calculate()" ontouchend="calculate();event.preventDefault();">🔢 HESAPLA</button>
+        <div class="error-box" id="errorBox" style="display: none;"></div>
 
         <div class="divider"></div>
         <div class="card-title" style="margin-bottom:10px">Testere Tip Rehberi</div>
@@ -523,16 +514,16 @@
     </div>
 
     <!-- RESULTS -->
-    <div id="results">
+    <div id="results" style="display: block;">
         <div class="card">
 
             <!-- Saw header -->
             <div class="saw-header">
                 <div class="saw-badge">
-                    <div class="saw-type-tag" id="rType">AP</div>
+                    <div class="saw-type-tag" id="rType">HW</div>
                     <div>
-                        <div class="saw-title" id="rCode">—</div>
-                        <div class="saw-sub" id="rDesc">—</div>
+                        <div class="saw-title" id="rCode">HW 500X5,0X30X72</div>
+                        <div class="saw-sub" id="rDesc">500mm çap • 72 diş • Sert Ağaç</div>
                     </div>
                 </div>
             </div>
@@ -548,10 +539,10 @@
                                 Gövde Maliyeti
                                 <span id="govdeTabs" style="display:none;gap:4px"></span>
                             </div>
-                            <div class="cost-detail" id="rBodyDet">—</div>
+                            <div class="cost-detail" id="rBodyDet">Ø500mm × 4.00mm kalınlık (kalınlık interp: 3.8mm=32,060€ / 4.8mm=39,330€)</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rBodyCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rBodyCost">33,514</span><span class="cur">EUR</span></div>
                 </div>
                 <div id="lazerNot" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11.5px;color:#1d4ed8;margin-top:-6px;margin-bottom:4px;"></div>
                 <div id="govdeUyari" style="display:none;background:#fef9ec;border:1px solid #fbbf24;border-radius:8px;padding:9px 13px;font-size:12px;color:#92400e;margin-top:-6px;margin-bottom:4px;line-height:1.5;"></div>
@@ -560,20 +551,20 @@
                         <div class="cost-icon ic-green">💎</div>
                         <div>
                             <div class="cost-name">Diş Maliyeti</div>
-                            <div class="cost-detail" id="rToothDet">—</div>
+                            <div class="cost-detail" id="rToothDet">Ceratizit • 10.5×5.3mm • 72 adet • 300 $/kg</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rToothCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rToothCost">34,339</span><span class="cur">EUR</span></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-item-left">
                         <div class="cost-icon ic-orange">🔗</div>
                         <div>
                             <div class="cost-name">Kaynak Teli Maliyeti</div>
-                            <div class="cost-detail" id="rWireDet">—</div>
+                            <div class="cost-detail" id="rWireDet">25mm/diş × 72 diş = 1800mm (~3.60g)</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rWireCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rWireCost">3,861</span><span class="cur">EUR</span></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-item-left">
@@ -591,24 +582,24 @@
             <div class="total-bar">
                 <div>
                     <div class="total-label">Değişken Maliyet Toplamı</div>
-                    <div class="total-sub" id="rRateInfo">—</div>
+                    <div class="total-sub" id="rRateInfo">USD/EUR: 0.8678 | TRY/EUR: 0.01950</div>
                 </div>
-                <div class="total-val"><span id="rTotal">—</span><span class="cur">€</span></div>
+                <div class="total-val"><span id="rTotal">73,214</span><span class="cur">€</span></div>
             </div>
 
             <!-- Production -->
             <div class="card-title">⏱️ Üretim Bilgisi</div>
             <div class="prod-grid" style="grid-template-columns:repeat(3,1fr)">
                 <div class="prod-card">
-                    <div class="prod-val" id="rHourly">—</div>
+                    <div class="prod-val" id="rHourly">2.86</div>
                     <div class="prod-lbl">Saatte Üretilen (adet)</div>
                 </div>
                 <div class="prod-card">
-                    <div class="prod-val" id="rDuration">—</div>
+                    <div class="prod-val" id="rDuration">21 dk</div>
                     <div class="prod-lbl">Üretim Süresi (dakika)</div>
                 </div>
                 <div class="prod-card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe">
-                    <div class="prod-val" id="rDaily" style="color:var(--accent)">—</div>
+                    <div class="prod-val" id="rDaily" style="color:var(--accent)">25 adet</div>
                     <div class="prod-lbl">Günlük Üretim (09-18)</div>
                 </div>
             </div>
@@ -616,11 +607,94 @@
             <div class="divider"></div>
 
             <!-- List price section -->
-            <div class="card-title">📋 Liste Fiyatı & Satış Fiyatı</div>
-            <div id="listeSec"></div>
+            <div class="card-title">📋 Liste Fiyatı &amp; Satış Fiyatı</div>
+            <div id="listeSec">
+        <div class="liste-found" style="">
+            <span class="liste-kod-badge" style="">AHS-500-02 &nbsp;·&nbsp; Ø500×4×30×72</span>
+            <div class="liste-grid">
+                <div class="liste-item">
+                    <div class="liste-lbl">Liste Fiyatı</div>
+                    <div class="liste-val">183<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Satış Fiyatı (-%65)</div>
+                    <div class="liste-val">64.05<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Hammadde Maliyeti</div>
+                    <div class="liste-val">73.21<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Üretim Karı</div>
+                    <div class="liste-val" style="color:#dc2626">-9.16<span class="lc"> €</span><br><span style="font-size:12px;font-weight:600">%-14.3</span></div>
+                </div>
+            </div>
+        </div></div>
 
             <!-- Net Kar Özeti (sayfanın sonu) -->
-            <div id="netKarOzet" style="display:none;margin-top:18px"></div>
+            <div id="netKarOzet" style="display: block; margin-top: 18px;">
+        <div style="border-top:2px solid var(--border2);padding-top:18px">
+            <div class="card-title" style="margin-bottom:14px">📊 Maliyet &amp; Kar Özeti</div>
+
+            <!-- Maliyet özet tablosu -->
+            <div style="background:#f8fafc;border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+                <div style="padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">
+                    <div style="color:var(--muted);margin-bottom:2px">🔩 Değişken Maliyet</div>
+                    <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Gövde + Diş + Tel + Kutu</div>
+                    <div style="font-weight:700;font-size:15px">73.214 €</div>
+                </div>
+                
+                <div style="padding:6px 0 2px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">🏭 Sabit Gider Payı (21dk / 198sa/ay)</div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">🏠 Kira</span>
+                <span>40.000 ₺/ay → <b>1.379 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">👷 Eleman Maaşları</span>
+                <span>48.000 ₺/ay → <b>1.655 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">⚡ Elektrik</span>
+                <span>25.000 ₺/ay → <b>0.862 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">⚠️ Öngörülemeyen Giderler</span>
+                <span>10.000 ₺/ay → <b>0.345 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">📌 Diğer</span>
+                <span>5.000 ₺/ay → <b>0.172 €</b></span>
+            </div>
+                <div style="padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px">
+                    <div style="color:var(--muted);margin-bottom:2px">Sabit Gider Payı Toplamı</div>
+                    <div style="font-weight:700;color:#d97706;font-size:15px">4.412 €</div>
+                </div>
+                <div style="padding:6px 0 2px;border-top:2px solid var(--border2);margin-top:4px">
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Toplam Maliyet</div>
+                    <div style="font-size:17px;font-weight:800">77.627 €</div>
+                </div>
+                
+                <div style="padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px;color:#2563eb">
+                    <div style="margin-bottom:2px">💰 Satış Fiyatı (-%65)</div>
+                    <div style="font-weight:700;font-size:15px">64.05 €</div>
+                </div>
+            </div>
+
+            <!-- Kar kutuları -->
+            
+            <div style="display:flex;gap:12px;flex-wrap:wrap;width:100%">
+                
+            <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fca5a5;border-radius:12px;padding:14px 16px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">Üretim Karı (Sabit Hariç)</div>
+                <div style="font-size:26px;font-weight:800;color:#dc2626">-9.16 €</div>
+                <div style="font-size:16px;font-weight:600;color:#b91c1c;margin-top:2px">-470 ₺</div>
+                <div style="margin-top:8px;font-size:13px;color:#991b1b">Marj: <b>-14.3%</b></div>
+            </div>
+                
+            <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fca5a5;border-radius:12px;padding:14px 16px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">Net Kar (Sabit Dahil)</div>
+                <div style="font-size:26px;font-weight:800;color:#dc2626">-13.58 €</div>
+                <div style="font-size:16px;font-weight:600;color:#b91c1c;margin-top:2px">-696 ₺</div>
+                <div style="margin-top:8px;font-size:13px;color:#991b1b">Marj: <b>-21.2%</b></div>
+            </div>
+            </div>
+        </div></div>
 
         </div>
     </div>
@@ -643,10 +717,9 @@
       <div id="pwScreen">
         <div class="pw-box">
           <div style="font-size:13px;color:var(--muted);text-align:center;">Fiyatları güncellemek için şifrenizi girin</div>
-          <input type="password" id="pwInput" placeholder="••••" maxlength="20"
-            onkeydown="if(event.key==='Enter')checkPassword()">
+          <input type="password" id="pwInput" placeholder="••••" maxlength="20" onkeydown="if(event.key==='Enter')checkPassword()">
           <button class="btn-save-settings" style="width:160px" onclick="checkPassword()">Giriş</button>
-          <div class="pw-error" id="pwError">Hatalı şifre, tekrar deneyin.</div>
+          <div class="pw-error" id="pwError" style="display: none;">Hatalı şifre, tekrar deneyin.</div>
         </div>
       </div>
 
@@ -669,7 +742,42 @@
         <!-- Sabit Giderler -->
         <div class="settings-section">
           <h3>🏭 Aylık Sabit Giderler (₺/ay)</h3>
-          <div id="sabitRows"></div>
+          <div id="sabitRows">
+        <div class="price-row">
+            <div class="price-row-label">🏠 Kira<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_kira" type="number" step="100" min="0" value="40000" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">👷 Eleman Maaşları<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_maas" type="number" step="100" min="0" value="48000" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">⚡ Elektrik<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_elektrik" type="number" step="100" min="0" value="25000" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">⚠️ Öngörülemeyen Giderler<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_ongorulemeyen" type="number" step="100" min="0" value="10000" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">📌 Diğer<span>aylık</span></div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sSabit_diger" type="number" step="100" min="0" value="5000" style="width:110px">
+                <span style="font-size:12px;color:var(--muted)">₺/ay</span>
+            </div>
+        </div></div>
           <div class="price-row" style="margin-top:4px;border-top:1px solid var(--border);padding-top:10px">
             <div class="price-row-label">Aylık Çalışma Saati<span>9sa × 22gün = 198 varsayılan</span></div>
             <div style="display:flex;align-items:center;gap:6px">
@@ -706,21 +814,630 @@
         <!-- Diş fiyatları -->
         <div class="settings-section">
           <h3>💎 Diş Fiyatları (USD / adet)</h3>
-          <div id="disRows"></div>
+          <div id="disRows">
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 8×3.4mm
+                <span>0.833g/adet → adet: 0.2499 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_0" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(0)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 8×4.2mm
+                <span>1g/adet → adet: 0.3000 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_1" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(1)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 8×4.8mm
+                <span>1.25g/adet → adet: 0.3750 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_2" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(2)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Jg03 — 8.5×5.6mm
+                <span>1.613g/adet → adet: 0.4839 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_3" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(3)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Jg03 — 8.5×6.2mm
+                <span>1.687g/adet → adet: 0.5061 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_4" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(4)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Jg03 — 8.5×6.4mm
+                <span>1.818g/adet → adet: 0.5454 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_5" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(5)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 10.5×3.5mm
+                <span>1.493g/adet → adet: 0.4479 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_6" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(6)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 10.5×4.2mm
+                <span>2.083g/adet → adet: 0.6249 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_7" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(7)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">
+                Ceratizit — 10.5×4.4mm
+                <span>2.174g/adet → adet: 0.6522 USD</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sDisKg_8" type="number" step="1" min="0" value="300" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">$/kg</span>
+                <button onclick="deleteBaseDis(8)" title="Bu dişi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div></div>
           <div style="font-size:10.5px;color:var(--muted);margin:6px 0 4px;font-weight:600">YENİ DİŞ ÇEŞİDİ EKLE — U(uzunluk) / G(genişlik) / Tel(mm) / Ağırlık(g) / $/kg</div>
-          <div id="disEkRows"></div>
-          <button onclick="document.getElementById('disEkRows').insertAdjacentHTML('beforeend', buildDisEkRow(null))"
-            style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Diş Ekle</button>
+          <div id="disEkRows"><div class="sDisEkRow" style="display:grid;grid-template-columns:60px 60px 1fr 50px 55px 65px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:6px 8px">
+        <input class="price-input dek-u" type="number" step="0.5" min="0" placeholder="U(mm)" value="10.5" style="width:100%">
+        <input class="price-input dek-g" type="number" step="0.1" min="0" placeholder="G(mm)" value="4.8" style="width:100%">
+        <input class="price-input dek-marka" type="text" placeholder="Marka" value="OKE" style="width:100%">
+        <input class="price-input dek-tel" type="number" step="1" min="0" placeholder="Tel" value="21" style="width:100%">
+        <input class="price-input dek-gr" type="number" step="0.001" min="0" placeholder="gr" value="2.04" style="width:100%">
+        <input class="price-input dek-kg" type="number" step="1" min="0" placeholder="$/kg" value="300" style="width:100%">
+        <button onclick="this.closest('.sDisEkRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sDisEkRow" style="display:grid;grid-template-columns:60px 60px 1fr 50px 55px 65px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:6px 8px">
+        <input class="price-input dek-u" type="number" step="0.5" min="0" placeholder="U(mm)" value="10.5" style="width:100%">
+        <input class="price-input dek-g" type="number" step="0.1" min="0" placeholder="G(mm)" value="5.3" style="width:100%">
+        <input class="price-input dek-marka" type="text" placeholder="Marka" value="OKE" style="width:100%">
+        <input class="price-input dek-tel" type="number" step="1" min="0" placeholder="Tel" value="22" style="width:100%">
+        <input class="price-input dek-gr" type="number" step="0.001" min="0" placeholder="gr" value="2.24" style="width:100%">
+        <input class="price-input dek-kg" type="number" step="1" min="0" placeholder="$/kg" value="300" style="width:100%">
+        <button onclick="this.closest('.sDisEkRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div></div>
+          <button onclick="document.getElementById('disEkRows').insertAdjacentHTML('beforeend', buildDisEkRow(null))" style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Diş Ekle</button>
         </div>
 
         <!-- Uğur Gövde fiyatları -->
         <div class="settings-section">
           <h3>🔵 Gövde Fiyatları — Uğur (EUR)</h3>
-          <div id="govdeRows"></div>
+          <div id="govdeRows">
+        <div class="price-row">
+            <div class="price-row-label">Ø120mm × 3.9mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_0" type="number" step="0.01" min="0" value="3.48" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(0)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø121mm × 2.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_1" type="number" step="0.01" min="0" value="4.27" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(1)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø125mm × 2.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_2" type="number" step="0.01" min="0" value="4.45" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(2)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø161mm × 4.4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_3" type="number" step="0.01" min="0" value="6.41" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(3)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø200mm × 2.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_4" type="number" step="0.01" min="0" value="10.26" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(4)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø210mm × 1.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_5" type="number" step="0.01" min="0" value="7.69" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(5)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø230mm × 1.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_6" type="number" step="0.01" min="0" value="7.69" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(6)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø250mm × 2.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_7" type="number" step="0.01" min="0" value="8.50" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(7)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø250mm × 2.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_8" type="number" step="0.01" min="0" value="8.90" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(8)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø250mm × 2.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_9" type="number" step="0.01" min="0" value="8.90" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(9)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø300mm × 2.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_10" type="number" step="0.01" min="0" value="12.00" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(10)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø300mm × 2.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_11" type="number" step="0.01" min="0" value="13.00" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(11)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø350mm × 2.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_12" type="number" step="0.01" min="0" value="18.81" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(12)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø350mm × 2.4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_13" type="number" step="0.01" min="0" value="19.24" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(13)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø350mm × 2.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_14" type="number" step="0.01" min="0" value="17.10" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(14)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø350mm × 2.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_15" type="number" step="0.01" min="0" value="17.10" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(15)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø350mm × 3mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_16" type="number" step="0.01" min="0" value="17.10" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(16)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø400mm × 2.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_17" type="number" step="0.01" min="0" value="21.37" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(17)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø400mm × 2.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_18" type="number" step="0.01" min="0" value="23.94" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(18)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø400mm × 3mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_19" type="number" step="0.01" min="0" value="21.37" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(19)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø400mm × 3.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_20" type="number" step="0.01" min="0" value="23.08" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(20)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø420mm × 2.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_21" type="number" step="0.01" min="0" value="20.52" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(21)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø420mm × 3.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_22" type="number" step="0.01" min="0" value="23.94" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(22)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 2.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_23" type="number" step="0.01" min="0" value="24.79" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(23)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 2.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_24" type="number" step="0.01" min="0" value="26.93" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(24)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 3mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_25" type="number" step="0.01" min="0" value="25.65" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(25)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 3.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_26" type="number" step="0.01" min="0" value="27.36" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(26)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 3.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_27" type="number" step="0.01" min="0" value="28.21" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(27)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø450mm × 4.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_28" type="number" step="0.01" min="0" value="35.05" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(28)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø500mm × 2.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_29" type="number" step="0.01" min="0" value="30.09" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(29)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø500mm × 3.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_30" type="number" step="0.01" min="0" value="31.21" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(30)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø500mm × 3.4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_31" type="number" step="0.01" min="0" value="30.78" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(31)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø500mm × 3.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_32" type="number" step="0.01" min="0" value="32.06" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(32)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø500mm × 4.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_33" type="number" step="0.01" min="0" value="39.33" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(33)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø520mm × 3.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_34" type="number" step="0.01" min="0" value="32.92" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(34)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø550mm × 2.9mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_35" type="number" step="0.01" min="0" value="33.34" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(35)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø550mm × 3mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_36" type="number" step="0.01" min="0" value="35.05" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(36)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø550mm × 3.4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_37" type="number" step="0.01" min="0" value="36.76" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(37)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø550mm × 3.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_38" type="number" step="0.01" min="0" value="38.47" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(38)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø550mm × 4.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_39" type="number" step="0.01" min="0" value="41.89" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(39)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø600mm × 3mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_40" type="number" step="0.01" min="0" value="33.77" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(40)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø600mm × 3.4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_41" type="number" step="0.01" min="0" value="35.91" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(41)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø600mm × 3.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_42" type="number" step="0.01" min="0" value="37.62" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(42)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø610mm × 3.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_43" type="number" step="0.01" min="0" value="47.88" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(43)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø630mm × 3.9mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_44" type="number" step="0.01" min="0" value="50.44" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(44)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø630mm × 4.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_45" type="number" step="0.01" min="0" value="57.28" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(45)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø650mm × 3.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_46" type="number" step="0.01" min="0" value="50.44" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(46)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø650mm × 3.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_47" type="number" step="0.01" min="0" value="53.86" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(47)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø650mm × 4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_48" type="number" step="0.01" min="0" value="53.86" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(48)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø650mm × 4.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_49" type="number" step="0.01" min="0" value="61.56" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(49)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø700mm × 4mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_50" type="number" step="0.01" min="0" value="62.41" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(50)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø700mm × 4.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_51" type="number" step="0.01" min="0" value="68.40" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(51)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø700mm × 4.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_52" type="number" step="0.01" min="0" value="70.11" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(52)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø700mm × 5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_53" type="number" step="0.01" min="0" value="71.82" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(53)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø750mm × 3.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_54" type="number" step="0.01" min="0" value="73.53" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(54)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø750mm × 4.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_55" type="number" step="0.01" min="0" value="82.93" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(55)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø760mm × 4.6mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_56" type="number" step="0.01" min="0" value="82.93" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(56)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø800mm × 4.2mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_57" type="number" step="0.01" min="0" value="94.05" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(57)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø800mm × 4.8mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_58" type="number" step="0.01" min="0" value="95.76" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(58)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø800mm × 5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_59" type="number" step="0.01" min="0" value="99.17" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(59)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø850mm × 4.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_60" type="number" step="0.01" min="0" value="94.05" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(60)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div>
+        <div class="price-row">
+            <div class="price-row-label">Ø900mm × 4.5mm kalınlık</div>
+            <div style="display:flex;align-items:center;gap:6px">
+                <input class="price-input" id="sGovde_61" type="number" step="0.01" min="0" value="102.59" style="width:90px">
+                <span style="font-size:12px;color:var(--muted)">EUR</span>
+                <button onclick="deleteBaseGovde(61)" title="Bu gövdeyi listeden kaldır" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:3px 7px;font-size:13px;flex-shrink:0">✕</button>
+            </div>
+        </div></div>
           <div style="font-size:10.5px;color:var(--muted);margin:6px 0 4px;font-weight:600">YENİ GÖVDE EKLE (Uğur) — Çap / Kalınlık / Fiyat</div>
           <div id="govdeEkRows"></div>
-          <button onclick="document.getElementById('govdeEkRows').insertAdjacentHTML('beforeend', buildGovdeEkRow(null))"
-            style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Uğur Gövde Ekle</button>
+          <button onclick="document.getElementById('govdeEkRows').insertAdjacentHTML('beforeend', buildGovdeEkRow(null))" style="font-size:12px;padding:5px 14px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:7px;cursor:pointer;margin-top:4px">+ Uğur Gövde Ekle</button>
         </div>
 
         <!-- Lazer Kesim Gövde fiyatları -->
@@ -730,9 +1447,38 @@
           <div style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;font-size:10px;color:var(--muted);font-weight:600;padding:0 8px;margin-bottom:2px">
             <span>Çap (mm)</span><span>Kalınlık</span><span>Fiyat (€)</span><span></span>
           </div>
-          <div id="lazerRows"></div>
-          <button onclick="document.getElementById('lazerRows').insertAdjacentHTML('beforeend', buildLazerRow(null))"
-            style="font-size:12px;padding:5px 14px;background:#dcfce7;color:#16a34a;border:1px solid #86efac;border-radius:7px;cursor:pointer;margin-top:4px">+ Lazer Gövde Ekle</button>
+          <div id="lazerRows"><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="300" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.5" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="7.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="350" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.8" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="11.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="400" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.8" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="14.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="450" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.8" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="17.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="300" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.2" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="7.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div><div class="sLazerRow" style="display:grid;grid-template-columns:80px 70px 80px 30px;gap:5px;align-items:center;margin-bottom:6px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 8px">
+        <input class="price-input lz-cap" type="number" step="1" min="0" placeholder="Ø çap" value="250" style="width:100%">
+        <input class="price-input lz-k" type="number" step="0.1" min="0" placeholder="kalınlık" value="2.2" style="width:100%">
+        <input class="price-input lz-f" type="number" step="0.01" min="0" placeholder="fiyat €" value="5.00" style="width:100%">
+        <button onclick="this.closest('.sLazerRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div></div>
+          <button onclick="document.getElementById('lazerRows').insertAdjacentHTML('beforeend', buildLazerRow(null))" style="font-size:12px;padding:5px 14px;background:#dcfce7;color:#16a34a;border:1px solid #86efac;border-radius:7px;cursor:pointer;margin-top:4px">+ Lazer Gövde Ekle</button>
         </div>
 
         <!-- Standart Dışı Özel Liste Fiyatları -->
@@ -742,9 +1488,17 @@
           <div style="display:grid;grid-template-columns:70px 58px 52px 52px 52px 65px 1fr 30px;gap:4px;font-size:10px;color:var(--muted);font-weight:600;padding:0 8px;margin-bottom:2px">
             <span>Tip</span><span>Ø (mm)</span><span>B (mm)</span><span>Göbek</span><span>Z (diş)</span><span>€ Fiyat</span><span>Kod</span><span></span>
           </div>
-          <div id="ozelRows"></div>
-          <button onclick="document.getElementById('ozelRows').insertAdjacentHTML('beforeend', buildOzelRow(null))"
-            style="font-size:12px;padding:5px 14px;background:#fef9c3;color:#a16207;border:1px solid #fde68a;border-radius:7px;cursor:pointer;margin-top:4px">+ Özel Fiyat Ekle</button>
+          <div id="ozelRows"><div class="sOzelRow" style="display:grid;grid-template-columns:70px 58px 52px 52px 52px 65px 1fr 30px;gap:4px;align-items:center;margin-bottom:6px;background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:6px 8px">
+        <select class="price-input oz-tip" style="width:100%"><option>AP</option><option>HW</option><option>RP</option><option selected="">MRP</option><option>TCG</option></select>
+        <input class="price-input oz-d" type="number" step="1" min="0" placeholder="Ø mm" value="800" style="width:100%">
+        <input class="price-input oz-b" type="number" step="0.1" min="0" placeholder="B mm" value="6" style="width:100%">
+        <input class="price-input oz-gobek" type="number" step="1" min="0" placeholder="Göbek" value="" style="width:100%">
+        <input class="price-input oz-z" type="number" step="1" min="0" placeholder="Z diş" value="40" style="width:100%">
+        <input class="price-input oz-eur" type="number" step="0.01" min="0" placeholder="€ fiyat" value="250" style="width:100%">
+        <input class="price-input oz-kod" type="text" placeholder="Kod (opsiyonel)" value="MRP-800x40" style="width:100%">
+        <button onclick="this.closest('.sOzelRow').remove()" style="background:#fecaca;border:none;border-radius:5px;cursor:pointer;padding:4px;font-size:13px">✕</button>
+    </div></div>
+          <button onclick="document.getElementById('ozelRows').insertAdjacentHTML('beforeend', buildOzelRow(null))" style="font-size:12px;padding:5px 14px;background:#fef9c3;color:#a16207;border:1px solid #fde68a;border-radius:7px;cursor:pointer;margin-top:4px">+ Özel Fiyat Ekle</button>
         </div>
 
         <div class="settings-actions">
@@ -757,10 +1511,10 @@
           <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:4px">📤 GitHub'a Yüklemek İçin</div>
           <div style="font-size:11.5px;color:#3b82f6;margin-bottom:8px">Lazer gövde, özel fiyatlar ve diş eklentilerini HTML'e gömer. Bu dosyayı GitHub'a yükle, herkes otomatik görsün.</div>
           <button onclick="htmlIndir()" style="width:100%;padding:10px;background:#2563eb;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">📥 Verileri Gömülü HTML İndir</button>
-          <div id="htmlIndirMsg" style="display:none;margin-top:6px;font-size:11.5px;color:#059669;text-align:center;font-weight:600"></div>
+          <div id="htmlIndirMsg" style="display: block; margin-top: 6px; font-size: 11.5px; color: rgb(59, 130, 246); text-align: center; font-weight: 600;">⏳ HTML hazırlanıyor...</div>
         </div>
 
-        <div class="save-ok" id="saveOk">✅ Fiyatlar kaydedildi!</div>
+        <div class="save-ok" id="saveOk" style="display: none;">✅ Fiyatlar kaydedildi!</div>
       </div>
 
     </div>
@@ -773,85 +1527,85 @@
 // ═══════════════════════════════════════════════
 
 const GOVDE = [
-    {cap:120, k:3.9,  f:3.477588872},
-    {cap:121, k:2.2,  f:4.274777821},
-    {cap:125, k:2.5,  f:4.445768934},
-    {cap:161, k:4.4,  f:6.412166731},
-    {cap:200, k:2.5,  f:10.25946677},
-    {cap:210, k:1.8,  f:7.694600077},
-    {cap:230, k:1.8,  f:7.694600077},
-    {cap:250, k:2.2,  f:6.0},
-    {cap:250, k:2.5,  f:6.0},
-    {cap:250, k:2.6,  f:8.891537867},
-    {cap:300, k:2.2,  f:7.0},
-    {cap:300, k:2.5,  f:7.0},
-    {cap:350, k:2.2,  f:18.80902241},
-    {cap:350, k:2.4,  f:19.23650019},
-    {cap:350, k:2.6,  f:17.09911128},
-    {cap:350, k:2.8,  f:17.09911128},
-    {cap:350, k:3.0,  f:17.09911128},
-    {cap:400, k:2.5,  f:21.3738891},
-    {cap:400, k:2.8,  f:23.9387558},
-    {cap:400, k:3.0,  f:21.3738891},
-    {cap:400, k:3.2,  f:23.08380023},
-    {cap:420, k:2.2,  f:20.51893354},
-    {cap:420, k:3.2,  f:23.9387558},
-    {cap:450, k:2.6,  f:24.79371136},
-    {cap:450, k:2.8,  f:26.93110027},
-    {cap:450, k:3.0,  f:25.64866692},
-    {cap:450, k:3.2,  f:27.35857805},
-    {cap:450, k:3.6,  f:28.21353362},
-    {cap:450, k:4.8,  f:35.05317813},
-    {cap:500, k:2.8,  f:30.09443586},
-    {cap:500, k:3.2,  f:31.20587809},
-    {cap:500, k:3.4,  f:30.77840031},
-    {cap:500, k:3.8,  f:32.06083366},
-    {cap:500, k:4.8,  f:39.32795595},
-    {cap:520, k:3.5,  f:32.91578922},
-    {cap:550, k:2.9,  f:33.343267},
-    {cap:550, k:3.0,  f:35.05317813},
-    {cap:550, k:3.4,  f:36.76308926},
-    {cap:550, k:3.6,  f:38.47300039},
-    {cap:550, k:4.8,  f:41.89282264},
-    {cap:600, k:3.0,  f:33.77074478},
-    {cap:600, k:3.4,  f:35.90813369},
-    {cap:600, k:3.6,  f:37.61804482},
-    {cap:610, k:3.5,  f:47.87751159},
-    {cap:630, k:3.9,  f:50.44237828},
-    {cap:630, k:4.5,  f:57.2820228},
-    {cap:650, k:3.6,  f:50.44237828},
-    {cap:650, k:3.8,  f:53.86220054},
-    {cap:650, k:4.0,  f:53.86220054},
-    {cap:650, k:4.5,  f:61.55680062},
-    {cap:700, k:4.0,  f:62.41175618},
-    {cap:700, k:4.2,  f:68.39644513},
-    {cap:700, k:4.6,  f:70.10635626},
-    {cap:700, k:5.0,  f:71.81626739},
-    {cap:750, k:3.6,  f:73.52617852},
-    {cap:750, k:4.8,  f:82.93068972},
-    {cap:760, k:4.6,  f:82.93068972},
-    {cap:800, k:4.2,  f:94.04511206},
-    {cap:800, k:4.8,  f:95.75502318},
-    {cap:800, k:5.0,  f:99.17484544},
-    {cap:850, k:4.5,  f:94.04511206},
-    {cap:900, k:4.5,  f:102.5946677},
+    {cap:120, k:3.9,  f:3.48,
+    {cap:121, k:2.2,  f:4.27,
+    {cap:125, k:2.5,  f:4.45,
+    {cap:161, k:4.4,  f:6.41,
+    {cap:200, k:2.5,  f:10.26,
+    {cap:210, k:1.8,  f:7.69,
+    {cap:230, k:1.8,  f:7.69,
+    {cap:250, k:2.2,  f:8.5,
+    {cap:250, k:2.5,  f:8.9,
+    {cap:250, k:2.6,  f:8.9,
+    {cap:300, k:2.2,  f:12,
+    {cap:300, k:2.5,  f:13,
+    {cap:350, k:2.2,  f:18.81,
+    {cap:350, k:2.4,  f:19.24,
+    {cap:350, k:2.6,  f:17.1,
+    {cap:350, k:2.8,  f:17.1,
+    {cap:350, k:3,  f:17.1,
+    {cap:400, k:2.5,  f:21.37,
+    {cap:400, k:2.8,  f:23.94,
+    {cap:400, k:3,  f:21.37,
+    {cap:400, k:3.2,  f:23.08,
+    {cap:420, k:2.2,  f:20.52,
+    {cap:420, k:3.2,  f:23.94,
+    {cap:450, k:2.6,  f:24.79,
+    {cap:450, k:2.8,  f:26.93,
+    {cap:450, k:3,  f:25.65,
+    {cap:450, k:3.2,  f:27.36,
+    {cap:450, k:3.6,  f:28.21,
+    {cap:450, k:4.8,  f:35.05,
+    {cap:500, k:2.8,  f:30.09,
+    {cap:500, k:3.2,  f:31.21,
+    {cap:500, k:3.4,  f:30.78,
+    {cap:500, k:3.8,  f:32.06,
+    {cap:500, k:4.8,  f:39.33,
+    {cap:520, k:3.5,  f:32.92,
+    {cap:550, k:2.9,  f:33.34,
+    {cap:550, k:3,  f:35.05,
+    {cap:550, k:3.4,  f:36.76,
+    {cap:550, k:3.6,  f:38.47,
+    {cap:550, k:4.8,  f:41.89,
+    {cap:600, k:3,  f:33.77,
+    {cap:600, k:3.4,  f:35.91,
+    {cap:600, k:3.6,  f:37.62,
+    {cap:610, k:3.5,  f:47.88,
+    {cap:630, k:3.9,  f:50.44,
+    {cap:630, k:4.5,  f:57.28,
+    {cap:650, k:3.6,  f:50.44,
+    {cap:650, k:3.8,  f:53.86,
+    {cap:650, k:4,  f:53.86,
+    {cap:650, k:4.5,  f:61.56,
+    {cap:700, k:4,  f:62.41,
+    {cap:700, k:4.2,  f:68.4,
+    {cap:700, k:4.6,  f:70.11,
+    {cap:700, k:5,  f:71.82,
+    {cap:750, k:3.6,  f:73.53,
+    {cap:750, k:4.8,  f:82.93,
+    {cap:760, k:4.6,  f:82.93,
+    {cap:800, k:4.2,  f:94.05,
+    {cap:800, k:4.8,  f:95.76,
+    {cap:800, k:5,  f:99.17,
+    {cap:850, k:4.5,  f:94.05,
+    {cap:900, k:4.5,  f:102.59,
 ];
 
 // uzunluk, genislik, marka, tel(mm/adet), gr(gram/adet - Excel'den sabit), kgUSD(kg fiyatı)
 // fUSD = kgUSD / 1000 * gr  →  sistem hesaplar
 const DIS_VARSAYILAN = [
-    {u:8.0,  g:3.4, marka:'Ceratizit', tel:15, gr:0.833, kgUSD:175},
-    {u:8.0,  g:4.2, marka:'Ceratizit', tel:19, gr:1.000, kgUSD:175},
-    {u:8.0,  g:4.8, marka:'Ceratizit', tel:20, gr:1.250, kgUSD:175},
-    {u:8.5,  g:5.6, marka:'Jg03',      tel:21, gr:1.613, kgUSD:175},
-    {u:8.5,  g:6.2, marka:'Jg03',      tel:22, gr:1.687, kgUSD:175},
-    {u:8.5,  g:6.4, marka:'Jg03',      tel:22, gr:1.818, kgUSD:175},
-    {u:10.5, g:3.5, marka:'Ceratizit', tel:17, gr:1.493, kgUSD:175},
-    {u:10.5, g:4.2, marka:'Ceratizit', tel:19, gr:2.083, kgUSD:175},
-    {u:10.5, g:4.4, marka:'Ceratizit', tel:22, gr:2.174, kgUSD:175},
-    {u:10.5, g:4.8, marka:'Ceratizit', tel:24, gr:2.041, kgUSD:175},
-    {u:10.5, g:5.3, marka:'Ceratizit', tel:25, gr:1.832, kgUSD:300},
-    {u:10.5, g:6.4, marka:'Ceratizit', tel:26, gr:2.717, kgUSD:300},
+    {u:8,  g:3.4, marka:'Ceratizit', tel:15, gr:0.833, kgUSD:300},
+    {u:8,  g:4.2, marka:'Ceratizit', tel:19, gr:1, kgUSD:300},
+    {u:8,  g:4.8, marka:'Ceratizit', tel:20, gr:1.25, kgUSD:300},
+    {u:8.5,  g:5.6, marka:'Jg03', tel:21, gr:1.613, kgUSD:300},
+    {u:8.5,  g:6.2, marka:'Jg03', tel:22, gr:1.687, kgUSD:300},
+    {u:8.5,  g:6.4, marka:'Jg03', tel:22, gr:1.818, kgUSD:300},
+    {u:10.5,  g:3.5, marka:'Ceratizit', tel:17, gr:1.493, kgUSD:300},
+    {u:10.5,  g:4.2, marka:'Ceratizit', tel:19, gr:2.083, kgUSD:300},
+    {u:10.5,  g:4.4, marka:'Ceratizit', tel:22, gr:2.174, kgUSD:300},
+,
+    {u:10.5, g:4.8, marka:'OKE', tel:21, gr:2.04, kgUSD:300},
+    {u:10.5, g:5.3, marka:'OKE', tel:22, gr:2.24, kgUSD:300}
 ];
 // fUSD adet fiyatını kgUSD ve gramajdan hesapla
 function disFiyatHesapla(d) { return d.kgUSD / 1000 * d.gr; }
@@ -863,10 +1617,54 @@ const GOVDE_DEGISKEN_IDX = GOVDE.map((_, i) => i);
 const KUTU_VARSAYILAN = 1.5;
 
 // ── Lazer Kesim gövde fiyatları (başlangıçta boş, ayarlardan eklenir) ──
-let GOVDE_LAZER = []; // {cap, k, f}
+let GOVDE_LAZER = [
+    {
+        "cap": 300,
+        "k": 2.5,
+        "f": 7
+    },
+    {
+        "cap": 350,
+        "k": 2.8,
+        "f": 11
+    },
+    {
+        "cap": 400,
+        "k": 2.8,
+        "f": 14
+    },
+    {
+        "cap": 450,
+        "k": 2.8,
+        "f": 17
+    },
+    {
+        "cap": 300,
+        "k": 2.2,
+        "f": 7
+    },
+    {
+        "cap": 250,
+        "k": 2.2,
+        "f": 5
+    }
+]; // {cap, k, f}
 
 // ── Standart dışı özel liste fiyatları (ayarlardan eklenir) ──
-let OZEL_FIYATLAR = []; // {kod, tip, D, B, Z, eur}
+let OZEL_FIYATLAR = [
+    {
+        "tip": "MRP",
+        "D": 800,
+        "B": 6,
+        "gobek": 0,
+        "Z": 40,
+        "eur": 250,
+        "kod": "MRP-800x40",
+        "d": [
+            30
+        ]
+    }
+]; // {kod, tip, D, B, Z, eur}
 
 // ── Aktif gövde kaynağı: 'ugur' | 'lazer' ──
 let AKTIF_GOVDE_KAYNAK = 'ugur';
@@ -1729,7 +2527,7 @@ let settingsUnlocked = false;
 //  bu sayıyı 1 artır → herkes yeni kodu alır
 //  (kişisel eklentiler/lazer/sabit korunur)
 // ════════════════════════════════════════════
-const DATA_VERSION = 3;
+const DATA_VERSION = 4;
 
 function getPassword() {
     return localStorage.getItem(LS_PW) || '3940';
@@ -2275,5 +3073,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
