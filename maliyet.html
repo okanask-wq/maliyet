@@ -453,20 +453,20 @@
             <div class="rate-chip highlight">
                 <div class="rlabel">1 € = ₺</div>
                 <input class="rate-input" id="inEurTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
-                <div class="rate-status" id="rDate">2026-03-27</div>
+                <div class="rate-status" id="rDate">2026-04-01</div>
             </div>
             <div class="rate-chip highlight">
                 <div class="rlabel">1 $ = ₺</div>
                 <input class="rate-input" id="inUsdTry" type="number" step="0.01" placeholder="—" oninput="onManualRate()">
-                <div class="rate-status" id="rStatus">2026-03-27</div>
+                <div class="rate-status" id="rStatus">2026-04-01</div>
             </div>
             <div class="rate-chip">
                 <div class="rlabel">USD / EUR</div>
-                <div class="rvalue" id="rUsdEur">0.8683</div>
+                <div class="rvalue" id="rUsdEur">0.8617</div>
             </div>
             <div class="rate-chip">
                 <div class="rlabel">TRY / EUR</div>
-                <div class="rvalue" id="rTryEur">0.01953</div>
+                <div class="rvalue" id="rTryEur">0.01938</div>
             </div>
         </div>
         <button class="refresh-btn" id="refreshBtn" onclick="fetchRates(true)" title="Kurları Güncelle">↻</button>
@@ -500,7 +500,7 @@
         </div>
 
         <button type="button" class="btn-calc" id="calcBtn" onclick="calculate()" ontouchend="calculate();event.preventDefault();">🔢 HESAPLA</button>
-        <div class="error-box" id="errorBox"></div>
+        <div class="error-box" id="errorBox" style="display: none;"></div>
 
         <div class="divider"></div>
         <div class="card-title" style="margin-bottom:10px">Testere Tip Rehberi</div>
@@ -514,16 +514,16 @@
     </div>
 
     <!-- RESULTS -->
-    <div id="results">
+    <div id="results" style="display: block;">
         <div class="card">
 
             <!-- Saw header -->
             <div class="saw-header">
                 <div class="saw-badge">
-                    <div class="saw-type-tag" id="rType">AP</div>
+                    <div class="saw-type-tag" id="rType">RP</div>
                     <div>
-                        <div class="saw-title" id="rCode">—</div>
-                        <div class="saw-sub" id="rDesc">—</div>
+                        <div class="saw-title" id="rCode">RP 500X4,0X30X48</div>
+                        <div class="saw-sub" id="rDesc">500mm çap • 48 diş • Yumuşak Ağaç</div>
                     </div>
                 </div>
             </div>
@@ -537,34 +537,36 @@
                         <div style="flex:1">
                             <div class="cost-name" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                                 Gövde Maliyeti
-                                <span id="govdeTabs" style="display:none;gap:4px"></span>
+                                <span id="govdeTabs" style="display: none; gap: 4px;">
+                <button class="govde-tab " onclick="switchGovde('ugur')">🔵 Uğur</button>
+                <button class="govde-tab active" onclick="switchGovde('lazer')">⚡ Lazer Kesim</button></span>
                             </div>
-                            <div class="cost-detail" id="rBodyDet">—</div>
+                            <div class="cost-detail" id="rBodyDet">Ø500mm × 2.80mm kalınlık</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rBodyCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rBodyCost">30,090</span><span class="cur">EUR</span></div>
                 </div>
-                <div id="lazerNot" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:11.5px;color:#1d4ed8;margin-top:-6px;margin-bottom:4px;"></div>
+                <div id="lazerNot" style="display: none; background: rgb(239, 246, 255); border: 1px solid rgb(191, 219, 254); border-radius: 8px; padding: 8px 12px; font-size: 11.5px; color: rgb(29, 78, 216); margin-top: -6px; margin-bottom: 4px;">⚡ Lazer kesim alternatifi mevcut: 11,000 € (Uğur'dan 6,100€ ucuz)</div>
                 <div id="govdeUyari" style="display:none;background:#fef9ec;border:1px solid #fbbf24;border-radius:8px;padding:9px 13px;font-size:12px;color:#92400e;margin-top:-6px;margin-bottom:4px;line-height:1.5;"></div>
                 <div class="cost-item">
                     <div class="cost-item-left">
                         <div class="cost-icon ic-green">💎</div>
                         <div>
                             <div class="cost-name">Diş Maliyeti</div>
-                            <div class="cost-detail" id="rToothDet">—</div>
+                            <div class="cost-detail" id="rToothDet">Ceratizit • 10.5×4.2mm • 48 adet • 300 $/kg</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rToothCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rToothCost">25,845</span><span class="cur">EUR</span></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-item-left">
                         <div class="cost-icon ic-orange">🔗</div>
                         <div>
                             <div class="cost-name">Kaynak Teli Maliyeti</div>
-                            <div class="cost-detail" id="rWireDet">—</div>
+                            <div class="cost-detail" id="rWireDet">19mm/diş × 48 diş = 912mm (~1.82g)</div>
                         </div>
                     </div>
-                    <div class="cost-eur"><span id="rWireCost">—</span><span class="cur">EUR</span></div>
+                    <div class="cost-eur"><span id="rWireCost">1,944</span><span class="cur">EUR</span></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-item-left">
@@ -582,24 +584,24 @@
             <div class="total-bar">
                 <div>
                     <div class="total-label">Değişken Maliyet Toplamı</div>
-                    <div class="total-sub" id="rRateInfo">—</div>
+                    <div class="total-sub" id="rRateInfo">USD/EUR: 0.8616 | TRY/EUR: 0.01938</div>
                 </div>
-                <div class="total-val"><span id="rTotal">—</span><span class="cur">€</span></div>
+                <div class="total-val"><span id="rTotal">59,379</span><span class="cur">€</span></div>
             </div>
 
             <!-- Production -->
             <div class="card-title">⏱️ Üretim Bilgisi</div>
             <div class="prod-grid" style="grid-template-columns:repeat(3,1fr)">
                 <div class="prod-card">
-                    <div class="prod-val" id="rHourly">—</div>
+                    <div class="prod-val" id="rHourly">4.29</div>
                     <div class="prod-lbl">Saatte Üretilen (adet)</div>
                 </div>
                 <div class="prod-card">
-                    <div class="prod-val" id="rDuration">—</div>
+                    <div class="prod-val" id="rDuration">14 dk</div>
                     <div class="prod-lbl">Üretim Süresi (dakika)</div>
                 </div>
                 <div class="prod-card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe">
-                    <div class="prod-val" id="rDaily" style="color:var(--accent)">—</div>
+                    <div class="prod-val" id="rDaily" style="color:var(--accent)">38 adet</div>
                     <div class="prod-lbl">Günlük Üretim (09-18)</div>
                 </div>
             </div>
@@ -608,10 +610,93 @@
 
             <!-- List price section -->
             <div class="card-title">📋 Liste Fiyatı &amp; Satış Fiyatı</div>
-            <div id="listeSec"></div>
+            <div id="listeSec">
+        <div class="liste-found" style="">
+            <span class="liste-kod-badge" style="">BG-500-01 &nbsp;·&nbsp; Ø500×4×30×48</span>
+            <div class="liste-grid">
+                <div class="liste-item">
+                    <div class="liste-lbl">Liste Fiyatı</div>
+                    <div class="liste-val">151<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Satış Fiyatı (-%65)</div>
+                    <div class="liste-val">52.85<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Hammadde Maliyeti</div>
+                    <div class="liste-val">59.38<span class="lc"> €</span></div>
+                </div>
+                <div class="liste-item">
+                    <div class="liste-lbl">Üretim Karı</div>
+                    <div class="liste-val" style="color:#dc2626">-6.53<span class="lc"> €</span><br><span style="font-size:12px;font-weight:600">%-12.4</span></div>
+                </div>
+            </div>
+        </div></div>
 
             <!-- Net Kar Özeti (sayfanın sonu) -->
-            <div id="netKarOzet" style="display:none;margin-top:18px"></div>
+            <div id="netKarOzet" style="display: block; margin-top: 18px;">
+        <div style="border-top:2px solid var(--border2);padding-top:18px">
+            <div class="card-title" style="margin-bottom:14px">📊 Maliyet &amp; Kar Özeti</div>
+
+            <!-- Maliyet özet tablosu -->
+            <div style="background:#f8fafc;border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:14px">
+                <div style="padding:5px 0;font-size:13px;border-bottom:1px solid var(--border)">
+                    <div style="color:var(--muted);margin-bottom:2px">🔩 Değişken Maliyet</div>
+                    <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Gövde + Diş + Tel + Kutu</div>
+                    <div style="font-weight:700;font-size:15px">59.379 €</div>
+                </div>
+                
+                <div style="padding:6px 0 2px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px">🏭 Sabit Gider Payı (14dk / 198sa/ay)</div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">🏠 Kira</span>
+                <span>40.000 ₺/ay → <b>0.914 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">👷 Eleman Maaşları</span>
+                <span>48.000 ₺/ay → <b>1.096 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">⚡ Elektrik</span>
+                <span>25.000 ₺/ay → <b>0.571 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">⚠️ Öngörülemeyen Giderler</span>
+                <span>10.000 ₺/ay → <b>0.228 €</b></span>
+            </div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)">
+                <span style="color:var(--muted)">📌 Diğer</span>
+                <span>5.000 ₺/ay → <b>0.114 €</b></span>
+            </div>
+                <div style="padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px">
+                    <div style="color:var(--muted);margin-bottom:2px">Sabit Gider Payı Toplamı</div>
+                    <div style="font-weight:700;color:#d97706;font-size:15px">2.923 €</div>
+                </div>
+                <div style="padding:6px 0 2px;border-top:2px solid var(--border2);margin-top:4px">
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Toplam Maliyet</div>
+                    <div style="font-size:17px;font-weight:800">62.302 €</div>
+                </div>
+                
+                <div style="padding:5px 0;font-size:13px;border-top:1px solid var(--border);margin-top:4px;color:#2563eb">
+                    <div style="margin-bottom:2px">💰 Satış Fiyatı (-%65)</div>
+                    <div style="font-weight:700;font-size:15px">52.85 €</div>
+                </div>
+            </div>
+
+            <!-- Kar kutuları -->
+            
+            <div style="display:flex;gap:12px;flex-wrap:wrap;width:100%">
+                
+            <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fca5a5;border-radius:12px;padding:14px 16px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">Üretim Karı (Sabit Hariç)</div>
+                <div style="font-size:26px;font-weight:800;color:#dc2626">-6.53 €</div>
+                <div style="font-size:16px;font-weight:600;color:#b91c1c;margin-top:2px">-337 ₺</div>
+                <div style="margin-top:8px;font-size:13px;color:#991b1b">Marj: <b>-12.4%</b></div>
+            </div>
+                
+            <div style="flex:1;min-width:140px;background:linear-gradient(135deg,#fef2f2,#fee2e2);border:1px solid #fca5a5;border-radius:12px;padding:14px 16px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;font-weight:600">Net Kar (Sabit Dahil)</div>
+                <div style="font-size:26px;font-weight:800;color:#dc2626">-9.45 €</div>
+                <div style="font-size:16px;font-weight:600;color:#b91c1c;margin-top:2px">-488 ₺</div>
+                <div style="margin-top:8px;font-size:13px;color:#991b1b">Marj: <b>-17.9%</b></div>
+            </div>
+            </div>
+        </div></div>
 
         </div>
     </div>
@@ -735,100 +820,100 @@
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 8×3.4mm
-                <span>0.833g/adet → adet: 0.1458 USD</span>
+                <span>0.833g/adet → adet: 0.2499 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_0" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_0" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 8×4.2mm
-                <span>1g/adet → adet: 0.1750 USD</span>
+                <span>1g/adet → adet: 0.3000 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_1" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_1" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 8×4.8mm
-                <span>1.25g/adet → adet: 0.2188 USD</span>
+                <span>1.25g/adet → adet: 0.3750 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_2" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_2" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Jg03 — 8.5×5.6mm
-                <span>1.613g/adet → adet: 0.2823 USD</span>
+                <span>1.613g/adet → adet: 0.4839 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_3" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_3" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Jg03 — 8.5×6.2mm
-                <span>1.687g/adet → adet: 0.2952 USD</span>
+                <span>1.687g/adet → adet: 0.5061 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_4" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_4" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Jg03 — 8.5×6.4mm
-                <span>1.818g/adet → adet: 0.3181 USD</span>
+                <span>1.818g/adet → adet: 0.5454 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_5" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_5" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 10.5×3.5mm
-                <span>1.493g/adet → adet: 0.2613 USD</span>
+                <span>1.493g/adet → adet: 0.4479 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_6" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_6" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 10.5×4.2mm
-                <span>2.083g/adet → adet: 0.3645 USD</span>
+                <span>2.083g/adet → adet: 0.6249 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_7" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_7" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 10.5×4.4mm
-                <span>2.174g/adet → adet: 0.3804 USD</span>
+                <span>2.174g/adet → adet: 0.6522 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_8" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_8" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
         <div class="price-row">
             <div class="price-row-label">
                 Ceratizit — 10.5×4.8mm
-                <span>2.041g/adet → adet: 0.3572 USD</span>
+                <span>2.041g/adet → adet: 0.6123 USD</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px">
-                <input class="price-input" id="sDisKg_9" type="number" step="1" min="0" value="175" style="width:90px">
+                <input class="price-input" id="sDisKg_9" type="number" step="1" min="0" value="300" style="width:90px">
                 <span style="font-size:12px;color:var(--muted)">$/kg</span>
             </div>
         </div>
@@ -2387,7 +2472,7 @@ let settingsUnlocked = false;
 //  bu sayıyı 1 artır → herkes yeni kodu alır
 //  (kişisel eklentiler/lazer/sabit korunur)
 // ════════════════════════════════════════════
-const DATA_VERSION = 3;
+const DATA_VERSION = 4;
 
 function getPassword() {
     return localStorage.getItem(LS_PW) || '3940';
